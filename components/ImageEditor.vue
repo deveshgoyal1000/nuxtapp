@@ -1,68 +1,55 @@
-<template>
-  <div>
-    <div ref="canvasContainer" class="canvas-container"></div>
-    <div class="controls">
-      <button @click="zoomIn">Zoom In</button>
-      <button @click="zoomOut">Zoom Out</button>
-      <!-- Add other manipulation buttons as needed -->
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import Konva from 'konva';
 
+// Props
+defineProps({
+  imageSrc: {
+    type: String,
+    required: true, // Ensure it's marked as required
+  },
+});
+
 const canvasContainer = ref(null);
-let stage;
-let layer;
-let image;
+let stage, layer, konvaImage;
 
 onMounted(() => {
+  if (!imageSrc) return;
+
   const img = new Image();
-  img.src = '/path/to/your/image.png'; // Set the image source here
-  
+  img.src = imageSrc;
+
   img.onload = () => {
     stage = new Konva.Stage({
       container: canvasContainer.value,
       width: img.width,
       height: img.height,
     });
-    
+
     layer = new Konva.Layer();
     stage.add(layer);
-    
-    image = new Konva.Image({
+
+    konvaImage = new Konva.Image({
       image: img,
       x: 0,
       y: 0,
     });
-    
-    layer.add(image);
+
+    layer.add(konvaImage);
     layer.batchDraw();
   };
 });
 
-const zoomIn = () => {
-  const scale = stage.scaleX() * 1.1;
-  stage.scale({ x: scale, y: scale });
-  layer.batchDraw();
-};
+// Watch for updates to imageSrc
+watch(() => imageSrc, (newSrc) => {
+  if (!stage || !konvaImage) return;
 
-const zoomOut = () => {
-  const scale = stage.scaleX() / 1.1;
-  stage.scale({ x: scale, y: scale });
-  layer.batchDraw();
-};
+  const newImg = new Image();
+  newImg.src = newSrc;
+
+  newImg.onload = () => {
+    konvaImage.image(newImg);
+    layer.batchDraw();
+  };
+});
 </script>
-
-<style scoped>
-.canvas-container {
-  width: 100%;
-  height: auto;
-  border: 1px solid #000;
-}
-.controls {
-  margin-top: 1rem;
-}
-</style>
