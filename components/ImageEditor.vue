@@ -2,10 +2,10 @@
   <div>
     <h3 class="text-lg font-semibold">Image Editor</h3>
     
-    <!-- File Upload Button (only one) -->
-    <input type="file" @change="handleImageUpload" />
+    <!-- Display uploaded image -->
+    <img v-if="imageSrc" :src="imageSrc" alt="Uploaded Image" class="image-preview" />
 
-    <!-- Drag and Drop Area (only one) -->
+    <!-- Drag and Drop Area (optional if you want it) -->
     <div
       ref="dropArea"
       class="border p-4 mt-4 text-center"
@@ -22,20 +22,22 @@
 
 <script setup>
 import Konva from 'konva';
-import { ref, onMounted } from 'vue';
+import { ref, defineProps, onMounted } from 'vue';
 
 const stageContainer = ref(null);
 const stage = ref(null);
 const layer = ref(null);
 const imageElement = ref(null);
 
-const handleImageUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    loadImage(file);
+// Props to receive image source from parent
+const props = defineProps({
+  imageSrc: {
+    type: String,
+    required: true,
   }
-};
+});
 
+// Function to handle drop event
 const handleDrop = (event) => {
   event.preventDefault();
   const file = event.dataTransfer.files[0];
@@ -44,10 +46,10 @@ const handleDrop = (event) => {
   }
 };
 
+// Load image into Konva for editing
 const loadImage = (file) => {
   const reader = new FileReader();
   reader.onload = () => {
-    // Create an image element
     imageElement.value = new Image();
     imageElement.value.src = reader.result;
     imageElement.value.onload = () => {
@@ -66,7 +68,7 @@ const loadImage = (file) => {
         height: imageElement.value.height,
       });
 
-      // Clear any previous images and add the new one
+      // Clear previous images and add the new one
       layer.value.removeChildren();
       layer.value.add(konvaImage);
       layer.value.batchDraw();
@@ -76,7 +78,7 @@ const loadImage = (file) => {
 };
 
 onMounted(() => {
-  // Initialize Konva stage with default size
+  // Initialize Konva stage
   stage.value = new Konva.Stage({
     container: stageContainer.value,
     width: 800,
@@ -101,5 +103,11 @@ input[type="file"] {
   padding: 20px;
   margin-top: 10px;
   cursor: pointer;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 400px;
+  margin-top: 20px;
 }
 </style>
