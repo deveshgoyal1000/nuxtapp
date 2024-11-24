@@ -1,0 +1,6 @@
+export default defineNuxtConfig({
+    css: [
+      '~/assets/styles/tailwind.css',  // Ensure this path is correct
+    ],
+  })
+  
