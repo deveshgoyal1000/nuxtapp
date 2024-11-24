@@ -1,76 +1,80 @@
 <template>
-  <div class="image-editor-container">
-    <div ref="container" class="image-canvas"></div>
-  </div>
+  <div ref="imageContainer" class="image-editor-container"></div>
 </template>
 
-<script setup>
-import { ref, onMounted, watch } from "vue";
-import Konva from "konva";
+<script>
+import { ref, onMounted, watch, defineProps } from 'vue';
+import Konva from 'konva';
 
-// Props
-const props = defineProps({
-  imageSrc: {
-    type: String,
-    required: true
-  }
-});
+export default {
+  name: 'ImageEditor',
+  props: {
+    imageSrc: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
+    const imageContainer = ref(null);
+    const layer = ref(null);
+    const stage = ref(null);
 
-const container = ref(null);
-const stage = ref(null);
-const layer = ref(null);
-
-onMounted(() => {
-  const stageInstance = new Konva.Stage({
-    container: container.value,
-    width: 800,
-    height: 600,
-  });
-
-  const layerInstance = new Konva.Layer();
-  stageInstance.add(layerInstance);
-  stage.value = stageInstance;
-  layer.value = layerInstance;
-});
-
-// Watch for imageSrc changes
-watch(() => props.imageSrc, (newImageSrc) => {
-  if (newImageSrc) {
-    const imageObj = new Image();
-    imageObj.src = newImageSrc; // This is the uploaded image
-
-    imageObj.onload = () => {
-      const konvaImage = new Konva.Image({
-        x: 50,
-        y: 50,
-        image: imageObj,
-        width: 150,
-        height: 150,
+    onMounted(() => {
+      const container = imageContainer.value;
+      
+      // Initialize the Konva Stage
+      stage.value = new Konva.Stage({
+        container: container,
+        width: container.offsetWidth,
+        height: container.offsetHeight,
       });
 
-      layer.value.add(konvaImage);
-      layer.value.batchDraw();
-    };
+      layer.value = new Konva.Layer();
+      stage.value.add(layer.value);
 
-    imageObj.onerror = () => {
-      console.error("Failed to load image.");
+      // Watch for changes to imageSrc
+      watch(() => props.imageSrc, (newImageSrc) => {
+        console.log('New image source:', newImageSrc); // Debug the new image source
+
+        if (newImageSrc) {
+          const imageObj = new Image();
+          imageObj.src = newImageSrc; // This is the uploaded image
+
+          // Handle image load
+          imageObj.onload = () => {
+            const konvaImage = new Konva.Image({
+              x: 50, // Position the image
+              y: 50,
+              image: imageObj,
+              width: imageObj.width, // Set the image width
+              height: imageObj.height, // Set the image height
+              draggable: true, // Optional: Makes the image draggable
+            });
+
+            // Add image to layer and redraw
+            layer.value.add(konvaImage);
+            layer.value.batchDraw();
+          };
+
+          // Handle image load error
+          imageObj.onerror = () => {
+            console.error("Failed to load image.");
+          };
+        }
+      }, { immediate: true });
+    });
+
+    return {
+      imageContainer,
     };
-  }
-});
+  },
+};
 </script>
 
 <style scoped>
 .image-editor-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.image-canvas {
-  width: 800px;
-  height: 600px;
-  background-color: #f3f3f3;
-  border: 1px solid #ccc;
+  width: 100%;
+  height: 100%;
+  border: 1px solid black; /* Optional: Just to see the container bounds */
 }
 </style>
