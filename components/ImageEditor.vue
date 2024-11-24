@@ -1,108 +1,36 @@
 <template>
-  <div>
+  <div class="image-editor">
     <h3 class="text-lg font-semibold">Image Editor</h3>
     
     <!-- Display uploaded image -->
     <img v-if="imageSrc" :src="imageSrc" alt="Uploaded Image" class="image-preview" />
 
-    <!-- Drag and Drop Area (optional if you want it) -->
-    <div
-      ref="dropArea"
-      class="border p-4 mt-4 text-center"
-      @dragover.prevent
-      @drop="handleDrop"
-    >
-      Drop image here or select from above
-    </div>
-
-    <!-- Container for Konva Stage -->
-    <div ref="stageContainer" class="border mt-4"></div>
+    <!-- Optional tools for manipulation like zoom and crop can be added here -->
+    <!-- You could use libraries like Konva for image manipulation -->
   </div>
 </template>
 
 <script setup>
-import Konva from 'konva';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
-// Props to receive image source from parent
-const props = defineProps({
+const imageSrc = defineProps({
   imageSrc: {
     type: String,
     required: true,
-  }
+  },
 });
 
-const stageContainer = ref(null);
-const stage = ref(null);
-const layer = ref(null);
-const imageElement = ref(null);
+const zoomLevel = ref(1);
+const crop = ref(null); // Crop functionality can be added as needed
 
-// Function to handle drop event
-const handleDrop = (event) => {
-  event.preventDefault();
-  const file = event.dataTransfer.files[0];
-  if (file) {
-    loadImage(file);
-  }
-};
-
-// Load image into Konva for editing
-const loadImage = (file) => {
-  const reader = new FileReader();
-  reader.onload = () => {
-    imageElement.value = new Image();
-    imageElement.value.src = reader.result;
-    imageElement.value.onload = () => {
-      // Dynamically resize the Konva stage to fit the image
-      if (stage.value) {
-        stage.value.width(imageElement.value.width);
-        stage.value.height(imageElement.value.height);
-      }
-
-      // Create Konva Image node
-      const konvaImage = new Konva.Image({
-        image: imageElement.value,
-        x: 0,
-        y: 0,
-        width: imageElement.value.width,
-        height: imageElement.value.height,
-      });
-
-      // Clear previous images and add the new one
-      layer.value.removeChildren();
-      layer.value.add(konvaImage);
-      layer.value.batchDraw();
-    };
-  };
-  reader.readAsDataURL(file);
-};
-
-onMounted(() => {
-  // Initialize Konva stage
-  stage.value = new Konva.Stage({
-    container: stageContainer.value,
-    width: 800,
-    height: 600,
-  });
-
-  // Initialize Konva layer
-  layer.value = new Konva.Layer();
-  stage.value.add(layer.value);
-});
+// Add methods for zoom, brightness, contrast, etc.
 </script>
 
 <style scoped>
-/* Optional: Styling for file input and drop area */
-input[type="file"] {
-  display: block;
-  margin-bottom: 10px;
-}
-
-#dropArea {
-  border: 2px dashed #cccccc;
-  padding: 20px;
-  margin-top: 10px;
-  cursor: pointer;
+.image-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .image-preview {
