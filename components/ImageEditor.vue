@@ -1,36 +1,68 @@
 <template>
-    <div>
-      <h3 class="text-lg font-semibold">Image Editor</h3>
-      <div ref="stageContainer" class="border mt-4"></div>
+  <div>
+    <div ref="canvasContainer" class="canvas-container"></div>
+    <div class="controls">
+      <button @click="zoomIn">Zoom In</button>
+      <button @click="zoomOut">Zoom Out</button>
+      <!-- Add other manipulation buttons as needed -->
     </div>
-  </template>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import Konva from 'konva';
+
+const canvasContainer = ref(null);
+let stage;
+let layer;
+let image;
+
+onMounted(() => {
+  const img = new Image();
+  img.src = '/path/to/your/image.png'; // Set the image source here
   
-  <script setup>
-  import Konva from 'konva';
-  import { onMounted, ref } from 'vue';
-  
-  const stageContainer = ref(null);
-  
-  onMounted(() => {
-    const stage = new Konva.Stage({
-      container: stageContainer.value,
-      width: 800,
-      height: 600,
+  img.onload = () => {
+    stage = new Konva.Stage({
+      container: canvasContainer.value,
+      width: img.width,
+      height: img.height,
     });
-  
-    const layer = new Konva.Layer();
+    
+    layer = new Konva.Layer();
     stage.add(layer);
-  
-    const rect = new Konva.Rect({
-      x: 100,
-      y: 100,
-      width: 200,
-      height: 100,
-      fill: 'blue',
+    
+    image = new Konva.Image({
+      image: img,
+      x: 0,
+      y: 0,
     });
-  
-    layer.add(rect);
-    layer.draw();
-  });
-  </script>
-  
+    
+    layer.add(image);
+    layer.batchDraw();
+  };
+});
+
+const zoomIn = () => {
+  const scale = stage.scaleX() * 1.1;
+  stage.scale({ x: scale, y: scale });
+  layer.batchDraw();
+};
+
+const zoomOut = () => {
+  const scale = stage.scaleX() / 1.1;
+  stage.scale({ x: scale, y: scale });
+  layer.batchDraw();
+};
+</script>
+
+<style scoped>
+.canvas-container {
+  width: 100%;
+  height: auto;
+  border: 1px solid #000;
+}
+.controls {
+  margin-top: 1rem;
+}
+</style>
