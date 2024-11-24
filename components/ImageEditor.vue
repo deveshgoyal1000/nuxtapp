@@ -60,6 +60,7 @@ function resetZoom() {
 }
 
 // Enable crop mode
+let cropMode = ref(false);
 function enableCrop() {
   cropMode.value = true;
 }
@@ -100,6 +101,7 @@ watch(uploadedImage, (newImage) => {
       // Log the image dimensions to ensure it is loaded
       console.log("Image Dimensions:", imageObj.width, imageObj.height);
 
+      // Create a Konva image element with the loaded image
       const konvaImage = new Konva.Image({
         x: 0,
         y: 0,
