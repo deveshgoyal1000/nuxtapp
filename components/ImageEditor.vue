@@ -22,12 +22,7 @@
 
 <script setup>
 import Konva from 'konva';
-import { ref, defineProps, onMounted } from 'vue';
-
-const stageContainer = ref(null);
-const stage = ref(null);
-const layer = ref(null);
-const imageElement = ref(null);
+import { ref, onMounted } from 'vue';
 
 // Props to receive image source from parent
 const props = defineProps({
@@ -36,6 +31,11 @@ const props = defineProps({
     required: true,
   }
 });
+
+const stageContainer = ref(null);
+const stage = ref(null);
+const layer = ref(null);
+const imageElement = ref(null);
 
 // Function to handle drop event
 const handleDrop = (event) => {
