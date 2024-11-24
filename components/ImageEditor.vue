@@ -1,57 +1,36 @@
-<script setup>
-import { ref, onMounted, watch } from 'vue';
-import Konva from 'konva';
-
-// Props
-defineProps({
-  imageSrc: {
-    type: String,
-    required: true, // Ensure it's marked as required
-  },
-});
-
-const canvasContainer = ref(null);
-let stage, layer, konvaImage;
-
-onMounted(() => {
-  if (process.client && imageSrc) {
-    initializeCanvas(imageSrc);
-  }
-});
-
-// Watch for updates to imageSrc
-watch(() => imageSrc, (newSrc) => {
-  if (process.client && newSrc) {
-    initializeCanvas(newSrc);
-  }
-});
-
-function initializeCanvas(src) {
-  const img = new Image(); // Only runs in the browser
-  img.src = src;
-
-  img.onload = () => {
-    stage = new Konva.Stage({
-      container: canvasContainer.value,
-      width: img.width,
-      height: img.height,
-    });
-
-    layer = new Konva.Layer();
-    stage.add(layer);
-
-    konvaImage = new Konva.Image({
-      image: img,
-      x: 0,
-      y: 0,
-    });
-
-    layer.add(konvaImage);
-    layer.batchDraw();
-  };
-}
-</script>
-
 <template>
-  <div ref="canvasContainer" class="image-editor"></div>
-</template>
+    <div>
+      <h3 class="text-lg font-semibold">Image Editor</h3>
+      <div ref="stageContainer" class="border mt-4"></div>
+    </div>
+  </template>
+  
+  <script setup>
+  import Konva from 'konva';
+  import { onMounted, ref } from 'vue';
+  
+  const stageContainer = ref(null);
+  
+  onMounted(() => {
+    const stage = new Konva.Stage({
+      container: stageContainer.value,
+      width: 800,
+      height: 600,
+    });
+  
+    const layer = new Konva.Layer();
+    stage.add(layer);
+  
+    const rect = new Konva.Rect({
+      x: 100,
+      y: 100,
+      width: 200,
+      height: 100,
+      fill: 'blue',
+    });
+  
+    layer.add(rect);
+    layer.draw();
+  });
+  </script>
+  
