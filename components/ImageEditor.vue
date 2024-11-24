@@ -15,13 +15,14 @@ export default {
     },
   },
   setup(props) {
-    const imageContainer = ref(null);
-    const layer = ref(null);
-    const stage = ref(null);
+    const imageContainer = ref(null);  // Reference to container div
+    const stage = ref(null);  // Konva stage
+    const layer = ref(null);  // Konva layer
+    let konvaImage = null;  // Image object to add to Konva layer
 
+    // Initialize Konva stage and layer
     const initKonva = () => {
       const container = imageContainer.value;
-      // Initialize Konva Stage
       stage.value = new Konva.Stage({
         container: container,
         width: container.offsetWidth,
@@ -32,44 +33,50 @@ export default {
       stage.value.add(layer.value);
     };
 
+    // Load image and create a Konva image object
     const loadImage = (imageSrc) => {
       const imageObj = new Image();
       imageObj.src = imageSrc;
 
+      // Handle image load success
       imageObj.onload = () => {
-        console.log('Image loaded successfully!');
-        const konvaImage = new Konva.Image({
-          x: 50,
-          y: 50,
-          image: imageObj,
-          width: imageObj.width,
-          height: imageObj.height,
-          draggable: true,
-        });
+        if (konvaImage) {
+          konvaImage.image(imageObj); // Update image source if the image already exists
+        } else {
+          // Create new Konva image if not created yet
+          konvaImage = new Konva.Image({
+            x: 50,
+            y: 50,
+            image: imageObj,
+            width: imageObj.width,
+            height: imageObj.height,
+            draggable: true, // Make image draggable
+          });
 
-        layer.value.add(konvaImage);
-        layer.value.batchDraw();
+          layer.value.add(konvaImage);
+          layer.value.batchDraw(); // Update the layer to reflect changes
+        }
       };
 
+      // Handle image load error
       imageObj.onerror = () => {
-        console.error("Failed to load the image.");
+        console.error('Image failed to load!');
       };
     };
 
+    // Watch for changes in imageSrc prop
+    watch(
+      () => props.imageSrc,
+      (newImageSrc) => {
+        console.log('Loading new image:', newImageSrc);
+        loadImage(newImageSrc);
+      },
+      { immediate: true } // Ensure that image is loaded immediately when component mounts
+    );
+
+    // Initialize Konva when the component mounts
     onMounted(() => {
       initKonva();
-      
-      // Watch for imageSrc changes and load the new image
-      watch(
-        () => props.imageSrc,
-        (newImageSrc) => {
-          console.log('New image source:', newImageSrc);
-          if (newImageSrc) {
-            loadImage(newImageSrc);
-          }
-        },
-        { immediate: true }
-      );
     });
 
     return {
