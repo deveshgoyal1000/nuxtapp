@@ -1,20 +1,19 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss'],
   css: ['~/assets/css/main.css'],
   build: {
-    transpile: ['dcmjs', 'cornerstone-core', 'cornerstone-tools', 'dicom-parser'], // Transpile DICOM-related libraries
+    transpile: ['dcmjs', 'cornerstone-core', 'cornerstone-tools', 'dicom-parser'],
     extend(config, { isClient, isServer }) {
       if (isServer) {
-        config.externals = { canvas: 'commonjs canvas' }; // Prevent canvas from causing issues in SSR
+        config.externals = { canvas: 'commonjs canvas' };
       }
     },
   },
   vite: {
     optimizeDeps: {
-      include: ['dcmjs', 'cornerstone-core', 'cornerstone-tools', 'dicom-parser'], // Pre-bundle these dependencies for faster builds
+      include: ['dcmjs', 'cornerstone-core', 'cornerstone-tools', 'dicom-parser'],
     },
   },
 });
