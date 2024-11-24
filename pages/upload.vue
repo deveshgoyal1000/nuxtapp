@@ -12,6 +12,16 @@
 
     <!-- Pass uploaded image data to ImageEditor -->
     <ImageEditor v-if="uploadedImage" :imageSrc="uploadedImage" />
+
+    <!-- Display DICOM metadata -->
+    <div v-if="dicomMetadata.PatientName" class="dicom-viewer">
+      <h3>DICOM Metadata</h3>
+      <p><strong>Patient Name:</strong> {{ dicomMetadata.PatientName }}</p>
+      <p><strong>Study Date:</strong> {{ dicomMetadata.StudyDate }}</p>
+      
+      <!-- Display DICOM image if applicable -->
+      <img v-if="dicomImage" :src="dicomImage" alt="DICOM Image" class="dicom-image" />
+    </div>
   </div>
 </template>
 
@@ -20,8 +30,10 @@ import { ref } from 'vue';
 import ImageEditor from '~/components/ImageEditor.vue'; // Ensure correct path
 import dcmjs from 'dcmjs';
 
-// Reactive reference for the uploaded image
+// Reactive references for the uploaded image and DICOM metadata
 const uploadedImage = ref(null);
+const dicomMetadata = ref({});
+const dicomImage = ref('');
 
 // Function to handle file uploads
 const handleFileUpload = async (event) => {
@@ -32,10 +44,10 @@ const handleFileUpload = async (event) => {
   if (file.type === 'application/dicom') {
     const arrayBuffer = await file.arrayBuffer();
     const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
-    console.log('DICOM Data:', dicomData);
-    // You can process or display the DICOM data here
+    dicomMetadata.value = dicomData.dict; // Store DICOM metadata
+    dicomImage.value = URL.createObjectURL(new Blob([arrayBuffer])); // Display DICOM image
   } else if (file.type.startsWith('image/')) {
-    // Handle image files
+    // Handle regular image files
     const reader = new FileReader();
     reader.onload = (e) => {
       uploadedImage.value = e.target.result; // Pass image data to ImageEditor
@@ -58,5 +70,15 @@ const handleFileUpload = async (event) => {
 .file-input {
   margin-bottom: 10px;
   padding: 10px;
+}
+
+/* Styles for displaying DICOM image */
+.dicom-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.dicom-viewer {
+  margin-top: 20px;
 }
 </style>
