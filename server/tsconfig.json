@@ -1,18 +1,6 @@
 {
+  "extends": "./node_modules/nuxt/tsconfig.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "jsx": "preserve",
-    "lib": ["dom", "esnext"]
-  },
-  "include": [
-    "nuxt.config.ts",
-    "types/**/*.d.ts",
-    "pages/**/*.ts",
-    "components/**/*.ts"
-  ]
+    "strict": true
+  }
 }
