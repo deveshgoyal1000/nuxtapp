@@ -1,14 +1,12 @@
+<!-- layouts/default.vue -->
 <template>
     <div>
       <header>
         <!-- Your header content here -->
       </header>
-      
-      <!-- This is where the page content will be injected -->
       <main>
-        <NuxtPage />
+        <NuxtPage />  <!-- This injects the content of the page component -->
       </main>
-      
       <footer>
         <!-- Your footer content here -->
       </footer>
@@ -16,6 +14,6 @@
   </template>
   
   <script setup>
-  // Optionally, you can define meta data or props here
+  // Layout-specific logic can go here if needed
   </script>
   
