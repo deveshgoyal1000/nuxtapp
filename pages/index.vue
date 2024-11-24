@@ -1,11 +1,6 @@
 <template>
-  <div class="text-center py-10">
-    <Header />
-    <h1 class="text-3xl font-bold mt-4">Welcome to Medical Imaging App</h1>
-    <p class="text-gray-600 mt-2">Explore cutting-edge medical imaging technologies</p>
+  <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
+    <h1 class="text-4xl font-bold text-blue-500">Medical Imaging App</h1>
+    <p class="mt-4 text-gray-600">Start building your medical image tools here.</p>
   </div>
 </template>
-
-<script setup>
-import Header from '~/components/Header.vue';
-</script>
