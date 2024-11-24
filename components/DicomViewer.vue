@@ -1,4 +1,4 @@
-<template>
+<template> 
     <div class="dicom-viewer">
       <h2 class="text-xl font-bold mb-4">DICOM Viewer</h2>
       <div id="dicom-container" class="border rounded shadow-md w-full h-96"></div>
@@ -6,8 +6,8 @@
   </template>
   
   <script>
-  import * as cornerstone from "cornerstone-core";
-  import * as cornerstoneTools from "cornerstone-tools";
+  import cornerstone from "cornerstone-core/dist/cornerstone.js";
+  import cornerstoneTools from "cornerstone-tools";
   import dicomParser from "dicom-parser";
   import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
   
@@ -15,31 +15,38 @@
     mounted() {
       const dicomElement = document.getElementById("dicom-container");
   
-      // Initialize cornerstone
+      // Enable cornerstone on the DICOM container
       cornerstone.enable(dicomElement);
   
       // Configure cornerstone WADO image loader
       cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
       cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
   
+      // Add WADO scheme to image loader
+      cornerstoneWADOImageLoader.configure({
+        beforeSend: function(xhr) {
+          // Add any custom headers here (if needed)
+          xhr.setRequestHeader("Authorization", "Bearer YOUR_TOKEN_HERE");
+        },
+      });
+  
       // Load the example DICOM file
-      const dicomFileUrl = "/example.dcm"; // Path to the DICOM file in the public folder
+      const dicomFileUrl = "/example.dcm"; // Ensure this file is placed in the public folder
       const imageId = `wadouri:${dicomFileUrl}`;
   
       cornerstone
         .loadImage(imageId)
         .then((image) => {
+          // Display the loaded DICOM image
           cornerstone.displayImage(dicomElement, image);
   
-          // Enable tools
-          const panTool = cornerstoneTools.PanTool;
-          const zoomTool = cornerstoneTools.ZoomTool;
+          // Enable tools for user interaction
+          cornerstoneTools.init();
+          cornerstoneTools.addTool(cornerstoneTools.PanTool);
+          cornerstoneTools.addTool(cornerstoneTools.ZoomTool);
   
-          cornerstoneTools.addTool(panTool);
-          cornerstoneTools.addTool(zoomTool);
-  
-          cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
-          cornerstoneTools.setToolActive("Zoom", { mouseButtonMask: 4 });
+          cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 }); // Left-click for pan
+          cornerstoneTools.setToolActive("Zoom", { mouseButtonMask: 4 }); // Right-click for zoom
         })
         .catch((error) => {
           console.error("Error loading DICOM file:", error);
