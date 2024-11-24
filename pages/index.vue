@@ -1,12 +1,9 @@
 <template>
-  <div ref="imageContainer" class="image-editor-container">
-    <p v-if="!imageLoaded" class="loading-text">Loading image...</p>
-    <p v-else-if="imageError" class="error-text">Failed to load image</p>
-  </div>
+  <div ref="imageContainer" class="image-editor-container"></div>
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, defineProps } from 'vue';
 import Konva from 'konva';
 
 export default {
@@ -18,12 +15,10 @@ export default {
     },
   },
   setup(props) {
-    const imageContainer = ref(null); // Reference to container div
-    const stage = ref(null); // Konva stage
-    const layer = ref(null); // Konva layer
-    const imageLoaded = ref(false); // Track if the image is loaded
-    const imageError = ref(false); // Track if there's an error loading the image
-    let konvaImage = null; // Image object to add to Konva layer
+    const imageContainer = ref(null);  // Reference to container div
+    const stage = ref(null);  // Konva stage
+    const layer = ref(null);  // Konva layer
+    let konvaImage = null;  // Image object to add to Konva layer
 
     // Initialize Konva stage and layer
     const initKonva = () => {
@@ -36,27 +31,19 @@ export default {
 
       layer.value = new Konva.Layer();
       stage.value.add(layer.value);
-
-      // Handle resizing
-      window.addEventListener('resize', () => {
-        stage.value.width(container.offsetWidth);
-        stage.value.height(container.offsetHeight);
-      });
     };
 
     // Load image and create a Konva image object
     const loadImage = (imageSrc) => {
-      imageLoaded.value = false;
-      imageError.value = false;
-
       const imageObj = new Image();
       imageObj.src = imageSrc;
 
+      // Handle image load success
       imageObj.onload = () => {
         if (konvaImage) {
-          konvaImage.image(imageObj); // Update existing Konva image
+          konvaImage.image(imageObj); // Update image source if the image already exists
         } else {
-          // Create new Konva image
+          // Create new Konva image if not created yet
           konvaImage = new Konva.Image({
             x: 50,
             y: 50,
@@ -67,15 +54,13 @@ export default {
           });
 
           layer.value.add(konvaImage);
+          layer.value.batchDraw(); // Update the layer to reflect changes
         }
-
-        layer.value.batchDraw(); // Update the layer
-        imageLoaded.value = true;
       };
 
+      // Handle image load error
       imageObj.onerror = () => {
         console.error('Image failed to load!');
-        imageError.value = true;
       };
     };
 
@@ -83,26 +68,19 @@ export default {
     watch(
       () => props.imageSrc,
       (newImageSrc) => {
-        if (layer.value) {
-          console.log('Loading new image:', newImageSrc);
-          loadImage(newImageSrc);
-        } else {
-          console.error('Konva layer is not initialized yet.');
-        }
+        console.log('Loading new image:', newImageSrc);
+        loadImage(newImageSrc);
       },
-      { immediate: true } // Ensure the image is loaded on mount
+      { immediate: true } // Ensure that image is loaded immediately when component mounts
     );
 
     // Initialize Konva when the component mounts
     onMounted(() => {
       initKonva();
-      loadImage(props.imageSrc);
     });
 
     return {
       imageContainer,
-      imageLoaded,
-      imageError,
     };
   },
 };
@@ -110,23 +88,8 @@ export default {
 
 <style scoped>
 .image-editor-container {
-  display: block;
-  position: relative;
   width: 100%;
   height: 100%;
-  border: 1px solid black;
-  overflow: hidden; /* Prevent image overflow */
-}
-
-.loading-text {
-  text-align: center;
-  color: gray;
-  font-size: 14px;
-}
-
-.error-text {
-  text-align: center;
-  color: red;
-  font-size: 14px;
+  border: 1px solid black; /* Optional: To visualize the container */
 }
 </style>
