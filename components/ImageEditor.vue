@@ -22,6 +22,7 @@
 import { ref, onMounted, watch } from 'vue';
 import Konva from 'konva';
 
+const container = ref(null);
 const uploadedImage = ref(null);
 const stage = ref(null);
 const layer = ref(null);
@@ -29,9 +30,9 @@ const layer = ref(null);
 // Initialize Konva canvas
 onMounted(() => {
   const stageInstance = new Konva.Stage({
-    container: $refs.container,
-    width: window.innerWidth,
-    height: window.innerHeight,
+    container: container.value, // Correct Vue 3 reference
+    width: 800, // Fixed width
+    height: 500, // Fixed height
   });
 
   const layerInstance = new Konva.Layer();
@@ -41,7 +42,7 @@ onMounted(() => {
   layer.value = layerInstance;
 });
 
-// Zoom In, Zoom Out, and Reset Zoom
+// Zoom Controls
 function zoomIn() {
   const scale = stage.value.scaleX();
   stage.value.scale({ x: scale * 1.1, y: scale * 1.1 });
@@ -59,13 +60,12 @@ function resetZoom() {
   layer.value.batchDraw();
 }
 
-// Enable crop mode
+// Crop and Panning (Optional)
 let cropMode = ref(false);
 function enableCrop() {
   cropMode.value = true;
 }
 
-// Crop the image
 function cropImage() {
   if (cropMode.value) {
     const image = layer.value.findOne('Image');
@@ -85,37 +85,32 @@ function cropImage() {
   }
 }
 
-// Watch for the uploaded image change
+// Watch for uploadedImage changes
 watch(uploadedImage, (newImage) => {
   if (newImage) {
-    console.log("Image URL/Data URL: ", newImage);
+    console.log("Uploaded Image Source:", newImage);
 
-    // Ensure the image is loaded properly
     const imageObj = new Image();
     imageObj.src = newImage;
 
-    // Onload function for image processing
     imageObj.onload = () => {
       console.log("Image loaded successfully.");
       console.log("Image Dimensions:", imageObj.width, imageObj.height);
 
-      // Create a Konva image element with the loaded image
       const konvaImage = new Konva.Image({
-        x: 50,  // Position on canvas
-        y: 50,  // Position on canvas
+        x: 50,
+        y: 50,
         image: imageObj,
         width: imageObj.width,
         height: imageObj.height,
       });
 
-      // Add the image to the Konva layer
       layer.value.add(konvaImage);
       layer.value.batchDraw();
     };
 
-    // Error handling if image fails to load
     imageObj.onerror = (e) => {
-      console.error('Failed to load image', e);
+      console.error("Failed to load image", e);
     };
   }
 });
@@ -132,10 +127,9 @@ watch(uploadedImage, (newImage) => {
 
 .image-canvas {
   border: 1px solid #ccc;
-  width: 100%;
-  height: 500px; /* Set a fixed height for the canvas */
+  width: 800px;
+  height: 500px;
   background-color: #f3f3f3;
-  display: block;
 }
 
 .controls {
