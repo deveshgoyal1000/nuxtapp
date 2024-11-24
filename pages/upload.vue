@@ -33,7 +33,15 @@ const handleFileUpload = async (event) => {
     const arrayBuffer = await file.arrayBuffer();
     const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
     console.log('DICOM Data:', dicomData);
-    // You can process or display the DICOM data here
+    
+    // Optionally extract pixel data or render as an image (this part depends on your requirements)
+    const pixelData = dicomData.dict['x7fe00010']; // Pixel Data tag for DICOM
+    if (pixelData) {
+      // Convert DICOM pixel data to an image (you may need further processing)
+      const image = createImageFromDicom(pixelData);
+      uploadedImage.value = image;  // You might want to set this to the appropriate image data
+    }
+
   } else if (file.type.startsWith('image/')) {
     // Handle image files
     const reader = new FileReader();
@@ -44,6 +52,13 @@ const handleFileUpload = async (event) => {
   } else {
     console.error('Unsupported file type:', file.type);
   }
+};
+
+// Example function to create an image from DICOM pixel data
+const createImageFromDicom = (pixelData) => {
+  // DICOM image processing (to be implemented)
+  // You could render pixel data or convert it into an ImageData object or base64 string
+  return 'data:image/jpeg;base64,...'; // Return base64 encoded image or similar
 };
 </script>
 
