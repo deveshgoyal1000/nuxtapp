@@ -1,3 +1,4 @@
+// nuxt.config.js
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
@@ -5,11 +6,6 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   build: {
     transpile: ['dcmjs', 'cornerstone-core', 'cornerstone-tools', 'dicom-parser'],
-    extend(config, { isClient, isServer }) {
-      if (isServer) {
-        config.externals = { canvas: 'commonjs canvas' };
-      }
-    },
   },
   vite: {
     optimizeDeps: {
