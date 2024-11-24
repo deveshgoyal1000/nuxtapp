@@ -22,9 +22,7 @@
 import { ref, onMounted, watch } from 'vue';
 import Konva from 'konva';
 
-const imageSrc = ref(null);
 const uploadedImage = ref(null);
-const cropMode = ref(false);
 const stage = ref(null);
 const layer = ref(null);
 
@@ -38,25 +36,6 @@ onMounted(() => {
 
   const layerInstance = new Konva.Layer();
   stageInstance.add(layerInstance);
-
-  // Set up the image layer
-  if (imageSrc.value) {
-    const imageObj = new Image();
-    imageObj.src = imageSrc.value;
-
-    imageObj.onload = () => {
-      const konvaImage = new Konva.Image({
-        x: 0,
-        y: 0,
-        image: imageObj,
-        width: imageObj.width,
-        height: imageObj.height,
-      });
-
-      layerInstance.add(konvaImage);
-      layerInstance.batchDraw();
-    };
-  }
 
   stage.value = stageInstance;
   layer.value = layerInstance;
@@ -88,7 +67,6 @@ function enableCrop() {
 // Crop the image
 function cropImage() {
   if (cropMode.value) {
-    // Get the cropped area
     const image = layer.value.findOne('Image');
     const cropBox = image.getClientRect();
 
@@ -109,6 +87,7 @@ function cropImage() {
 // Watch for the uploaded image change
 watch(uploadedImage, (newImage) => {
   if (newImage) {
+    // Ensure the image is loaded properly
     const imageObj = new Image();
     imageObj.src = newImage;
 
@@ -121,8 +100,14 @@ watch(uploadedImage, (newImage) => {
         height: imageObj.height,
       });
 
+      // Add the image to the layer and redraw
       layer.value.add(konvaImage);
       layer.value.batchDraw();
+    };
+
+    // Handle errors if the image cannot load
+    imageObj.onerror = () => {
+      console.error('Failed to load image');
     };
   }
 });
@@ -133,17 +118,20 @@ watch(uploadedImage, (newImage) => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
 
 .image-canvas {
   border: 1px solid #ccc;
   width: 100%;
-  height: 500px; /* You can adjust this size as per your needs */
+  height: 500px; /* Set a fixed height for the canvas */
   background-color: #f3f3f3;
 }
 
 .controls {
   margin-top: 10px;
+  text-align: center;
 }
 
 button {
