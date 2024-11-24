@@ -1,14 +1,5 @@
 <template>
-  <div>
-    <Navbar />
+  <NuxtLayout>
     <NuxtPage />
-  </div>
+  </NuxtLayout>
 </template>
-
-<script setup>
-import Navbar from '~/components/Navbar.vue';
-</script>
-
-<style>
-/* Add global styles here if needed */
-</style>
