@@ -1,55 +1,43 @@
 <template>
-    <div>
-      <h1>DICOM Viewer</h1>
-      <div ref="dicomContainer" id="dicom-container" style="width: 512px; height: 512px; background: black;"></div>
+    <div class="dicom-viewer">
+      <h2 class="text-xl font-bold mb-4">DICOM Viewer</h2>
+      <div id="dicom-container" class="border rounded shadow-md w-full h-96"></div>
     </div>
   </template>
   
   <script>
-  import cornerstone from "cornerstone-core";
-  import cornerstoneTools from "cornerstone-tools";
+  import * as cornerstone from "cornerstone-core";
+  import * as cornerstoneTools from "cornerstone-tools";
   import dicomParser from "dicom-parser";
   
   export default {
-    name: "DicomViewer",
     mounted() {
-      this.setupDicomViewer();
-    },
-    methods: {
-      setupDicomViewer() {
-        const container = this.$refs.dicomContainer;
+      const dicomElement = document.getElementById("dicom-container");
   
-        // Enable the container for Cornerstone
-        cornerstone.enable(container);
+      // Initialize cornerstone on the element
+      cornerstone.enable(dicomElement);
   
-        // Load and render the DICOM file
-        fetch("/path-to-your-dicom-file.dcm")
-          .then((response) => response.arrayBuffer())
-          .then((arrayBuffer) => {
-            const imageId = cornerstone.registerImageLoader("dicom", () => {
-              const byteArray = new Uint8Array(arrayBuffer);
-              const dataSet = dicomParser.parseDicom(byteArray);
-              return cornerstone.imageCache.putImageLoadObject(imageId, {
-                promise: Promise.resolve({
-                  data: dataSet,
-                }),
-              });
-            });
-            cornerstone.loadImage(imageId).then((image) => {
-              cornerstone.displayImage(container, image);
-            });
-          })
-          .catch((err) => {
-            console.error("Error loading DICOM file:", err);
-          });
-      },
+      // Load the example DICOM file
+      const dicomFileUrl = "/example.dcm"; // Path to the DICOM file in the public folder
+      cornerstone
+        .loadImage(`wadouri:${dicomFileUrl}`)
+        .then((image) => {
+          cornerstone.displayImage(dicomElement, image);
+        })
+        .catch((error) => {
+          console.error("Error loading DICOM file:", error);
+        });
     },
   };
   </script>
   
   <style>
+  .dicom-viewer {
+    margin: 20px 0;
+  }
+  
   #dicom-container {
-    margin: 20px auto;
+    background-color: black;
   }
   </style>
   
