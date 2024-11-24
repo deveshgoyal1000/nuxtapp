@@ -1,16 +1,16 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
-export const useAppStore = defineStore('app', {
+export const useMainStore = defineStore('main', {
   state: () => ({
+    metadata: null,
     image: null,
-    brightness: 1,
   }),
   actions: {
-    setImage(image) {
-      this.image = image
+    setMetadata(data) {
+      this.metadata = data;
     },
-    setBrightness(brightness) {
-      this.brightness = brightness
-    }
-  }
-})
+    setImage(data) {
+      this.image = data;
+    },
+  },
+});
