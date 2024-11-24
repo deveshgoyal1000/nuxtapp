@@ -1,7 +1,7 @@
 <template>
   <div class="upload-page">
     <h1 class="text-2xl font-bold mb-4">Upload and Edit Images</h1>
-    
+
     <!-- Single File Input for Image Upload -->
     <input 
       type="file" 
@@ -9,7 +9,7 @@
       accept="image/*,application/dicom" 
       class="file-input" 
     />
-    
+
     <!-- Pass uploaded image data to ImageEditor -->
     <ImageEditor v-if="uploadedImage" :imageSrc="uploadedImage" />
   </div>
@@ -17,7 +17,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import ImageEditor from '~/components/ImageEditor.vue'; // Ensure the correct path
+import ImageEditor from '~/components/ImageEditor.vue'; // Ensure correct path
 import dcmjs from 'dcmjs';
 
 // Reactive reference for the uploaded image
