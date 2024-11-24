@@ -1,19 +1,18 @@
-<!-- layouts/default.vue -->
 <template>
     <div>
       <header>
-        <!-- Your header content here -->
+        <!-- Optional header content -->
       </header>
       <main>
-        <NuxtPage />  <!-- This injects the content of the page component -->
+        <NuxtPage />
       </main>
       <footer>
-        <!-- Your footer content here -->
+        <!-- Optional footer content -->
       </footer>
     </div>
   </template>
   
   <script setup>
-  // Layout-specific logic can go here if needed
+  // This is where you can add layout-specific logic if needed
   </script>
   
