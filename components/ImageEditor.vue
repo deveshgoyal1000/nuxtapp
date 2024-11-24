@@ -5,8 +5,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Konva from "konva";
+
+// Props
+const props = defineProps({
+  imageSrc: {
+    type: String,
+    required: true
+  }
+});
 
 const container = ref(null);
 const stage = ref(null);
@@ -23,20 +31,31 @@ onMounted(() => {
   stageInstance.add(layerInstance);
   stage.value = stageInstance;
   layer.value = layerInstance;
+});
 
-  const imageObj = new Image();
-  imageObj.src = "https://via.placeholder.com/150"; // Test image
-  imageObj.onload = () => {
-    const konvaImage = new Konva.Image({
-      x: 50,
-      y: 50,
-      image: imageObj,
-      width: 150,
-      height: 150,
-    });
-    layerInstance.add(konvaImage);
-    layerInstance.batchDraw();
-  };
+// Watch for imageSrc changes
+watch(() => props.imageSrc, (newImageSrc) => {
+  if (newImageSrc) {
+    const imageObj = new Image();
+    imageObj.src = newImageSrc; // This is the uploaded image
+
+    imageObj.onload = () => {
+      const konvaImage = new Konva.Image({
+        x: 50,
+        y: 50,
+        image: imageObj,
+        width: 150,
+        height: 150,
+      });
+
+      layer.value.add(konvaImage);
+      layer.value.batchDraw();
+    };
+
+    imageObj.onerror = () => {
+      console.error("Failed to load image.");
+    };
+  }
 });
 </script>
 
