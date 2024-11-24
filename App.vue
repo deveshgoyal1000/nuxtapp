@@ -1,10 +1,6 @@
 <template>
   <div>
-    <Navbar />
+    <h1>Welcome to My Medical Imaging App</h1>
     <NuxtPage />
   </div>
 </template>
-
-<script setup>
-import Navbar from '~/components/Navbar.vue';
-</script>
