@@ -1,5 +1,4 @@
-import { defineNuxtConfig } from 'nuxt';
-
+// nuxt.config.ts
 export default defineNuxtConfig({
   css: ['~/assets/css/tailwind.css'],
   app: {
