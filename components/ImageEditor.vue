@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, defineProps } from 'vue';
 import Konva from 'konva';
 
 export default {
@@ -15,70 +15,68 @@ export default {
     },
   },
   setup(props) {
-    const imageContainer = ref(null); // Reference to the container div
-    const stage = ref(null); // Konva stage
-    const layer = ref(null); // Konva layer
-    let konvaImage = null; // Konva image object
+    const imageContainer = ref(null);  // Reference to container div
+    const stage = ref(null);  // Konva stage
+    const layer = ref(null);  // Konva layer
+    let konvaImage = null;  // Image object to add to Konva layer
 
     // Initialize Konva stage and layer
     const initKonva = () => {
       const container = imageContainer.value;
       stage.value = new Konva.Stage({
         container: container,
-        width: container.offsetWidth || 800, // Default width if no size is set
-        height: container.offsetHeight || 600, // Default height
+        width: container.offsetWidth,
+        height: container.offsetHeight,
       });
 
       layer.value = new Konva.Layer();
       stage.value.add(layer.value);
     };
 
-    // Load and display the image
+    // Load image and create a Konva image object
     const loadImage = (imageSrc) => {
       const imageObj = new Image();
       imageObj.src = imageSrc;
 
+      // Handle image load success
       imageObj.onload = () => {
         if (konvaImage) {
-          konvaImage.image(imageObj); // Update image source if already exists
+          konvaImage.image(imageObj); // Update image source if the image already exists
         } else {
+          // Create new Konva image if not created yet
           konvaImage = new Konva.Image({
             x: 50,
             y: 50,
             image: imageObj,
+            width: imageObj.width,
+            height: imageObj.height,
             draggable: true, // Make image draggable
           });
 
           layer.value.add(konvaImage);
+          layer.value.batchDraw(); // Update the layer to reflect changes
         }
-
-        // Adjust canvas size to fit the image
-        stage.value.size({
-          width: imageObj.width,
-          height: imageObj.height,
-        });
-
-        layer.value.batchDraw(); // Redraw the layer to reflect changes
       };
 
+      // Handle image load error
       imageObj.onerror = () => {
-        console.error('Failed to load the image:', imageSrc);
+        console.error('Image failed to load!');
       };
     };
 
-    // Watch for changes in the imageSrc prop
+    // Watch for changes in imageSrc prop
     watch(
       () => props.imageSrc,
       (newImageSrc) => {
+        console.log('Loading new image:', newImageSrc);
         loadImage(newImageSrc);
       },
-      { immediate: true }
+      { immediate: true } // Ensure that image is loaded immediately when component mounts
     );
 
     // Initialize Konva when the component mounts
     onMounted(() => {
       initKonva();
-      loadImage(props.imageSrc); // Load the initial image
     });
 
     return {
@@ -92,8 +90,6 @@ export default {
 .image-editor-container {
   width: 100%;
   height: 100%;
-  border: 1px solid black;
-  overflow: hidden;
-  position: relative;
+  border: 1px solid black; /* Optional: To visualize the container */
 }
 </style>
