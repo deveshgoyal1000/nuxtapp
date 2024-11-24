@@ -1,56 +1,38 @@
-export default {
-  // General Nuxt configuration
-  ssr: true, // or false depending on your preference
-  target: 'server', // or 'static' if you are generating a static site
+import { defineNuxtConfig } from 'nuxt'
 
+export default defineNuxtConfig({
+  build: {
+    transpile: ['cornerstone-core', 'cornerstone-tools', 'dicom-parser'], // Add your cornerstone related packages here
+  },
+  css: [
+    // Add your global styles here if needed
+    '@/assets/styles/main.css',
+  ],
   vite: {
-    // Disable Hot Module Replacement (HMR) for cornerstone-core
     server: {
-      hmr: false,  // Disable HMR to prevent conflicts with cornerstone-core
+      hmr: {
+        protocol: 'ws',
+        host: 'localhost',
+      },
     },
     optimizeDeps: {
-      exclude: ['cornerstone-core'],  // Exclude cornerstone-core from Vite optimization
+      include: ['cornerstone-core', 'cornerstone-tools', 'dicom-parser'], // Ensure necessary dependencies are optimized by Vite
+    },
+    define: {
+      'process.env': {}, // If you're using environment variables
     },
   },
-
-  build: {
-    // Webpack-specific configurations (if you're falling back to Webpack)
-    // For Vite-based projects, these can typically be left out.
-    // If you want to tweak Webpack configurations, you can do so here.
+  router: {
+    middleware: ['yourMiddleware'], // Adjust with your middleware if you have one
   },
-
-  // Module settings
-  modules: [
-    '@nuxtjs/tailwindcss', // Example, add your own modules
-  ],
-
-  // Other configuration
-  css: [
-    // Global stylesheets
-    'assets/css/main.css',
-  ],
-
-  buildModules: [
-    // Modules for build process
-    '@nuxtjs/vite',
-  ],
-
-  // Configuration for Vue if needed
-  vue: {
-    config: {
-      productionTip: false,
-      devtools: true,
-    },
+  nitro: {
+    preset: 'node', // Adjust preset if necessary for your environment
   },
-
-  // Server-side configuration if needed
-  server: {
-    port: 3000, // Adjust port if needed
-    host: '0.0.0.0',
+  tailwindcss: {
+    viewer: true, // Enables Tailwind Viewer
   },
-
-  // Customize the Nuxt layout if you have specific needs
-  layout: 'default', // or 'your-custom-layout'
-
-  // You can also add any additional configuration for specific modules you're using.
-}
+  plugins: [
+    { src: '~/plugins/cornerstone.js', mode: 'client' }, // Add Cornerstone initialization if required
+  ],
+  compatibilityDate: '2024-11-24', // You can set this to match your desired compatibility date
+})
