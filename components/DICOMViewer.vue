@@ -19,6 +19,9 @@
   const dicomMetadata = ref(null);
   const imageSrc = ref(null);
   
+  // Emit imageSrc to the parent
+  defineEmits(['image-uploaded']);
+  
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -28,27 +31,15 @@
       const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
       dicomMetadata.value = dicomData.dict;
       imageSrc.value = URL.createObjectURL(file);
+  
+      // Emit the image source
+      emit('image-uploaded', imageSrc.value);
+    } else if (file.type.startsWith('image/')) {
+      imageSrc.value = URL.createObjectURL(file);
+  
+      // Emit the image source
+      emit('image-uploaded', imageSrc.value);
     }
   };
   </script>
-  
-  <style scoped>
-  .dicom-viewer {
-    text-align: center;
-  }
-  .file-input {
-    margin-bottom: 1rem;
-  }
-  .metadata {
-    margin-top: 1rem;
-    font-size: 1.1rem;
-  }
-  .image-container {
-    margin-top: 1rem;
-  }
-  .image {
-    max-width: 100%;
-    height: auto;
-  }
-  </style>
   
