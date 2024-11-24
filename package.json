@@ -27,7 +27,12 @@
   },
   "vite": {
     "optimizeDeps": {
-      "include": ["dcmjs", "cornerstone-core", "cornerstone-tools", "dicom-parser"]
+      "include": [
+        "dcmjs",
+        "cornerstone-core",
+        "cornerstone-tools",
+        "dicom-parser"
+      ]
     }
   }
 }
