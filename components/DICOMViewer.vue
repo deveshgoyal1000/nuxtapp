@@ -1,89 +1,54 @@
 <template>
     <div class="dicom-viewer">
-      <h2>DICOM Image Viewer</h2>
-      
-      <!-- DICOM Image Display -->
-      <div v-if="imageSrc" class="image-container">
-        <img :src="imageSrc" alt="DICOM Image" class="dicom-image" />
+      <h2 class="text-2xl font-bold mb-4">DICOM Image Viewer</h2>
+      <input type="file" @change="handleFileUpload" accept="image/*,application/dicom" class="file-input" />
+      <div v-if="dicomMetadata" class="metadata">
+        <p><strong>Patient Name:</strong> {{ dicomMetadata.PatientName }}</p>
+        <p><strong>Study Date:</strong> {{ dicomMetadata.StudyDate }}</p>
       </div>
-  
-      <!-- Metadata Display -->
-      <div v-if="dicomMetadata" class="metadata-container">
-        <h3>Metadata</h3>
-        <p><strong>Patient Name:</strong> {{ dicomMetadata.patientName }}</p>
-        <p><strong>Study Date:</strong> {{ dicomMetadata.studyDate }}</p>
-        <p><strong>Modality:</strong> {{ dicomMetadata.modality }}</p>
-        <!-- Add more metadata as necessary -->
+      <div v-if="imageSrc" class="image-container">
+        <img :src="imageSrc" alt="DICOM Image" class="image" />
       </div>
     </div>
   </template>
   
   <script setup>
   import { ref } from 'vue';
-  import { useDicom } from '~/composables/useDicom'; // Import the composable for DICOM handling
+  import dcmjs from 'dcmjs';
   
-  // Props for the component (file input or image source)
-  const props = defineProps({
-    dicomFile: {
-      type: File,
-      required: true,
-    },
-  });
-  
-  // Reactive references to store image source and metadata
-  const imageSrc = ref(null);
   const dicomMetadata = ref(null);
+  const imageSrc = ref(null);
   
-  // DICOM handling logic
-  const { loadDicomFile } = useDicom();
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
   
-  // Load DICOM image and metadata when component is mounted
-  onMounted(async () => {
-    if (props.dicomFile) {
-      const dicomData = await loadDicomFile(props.dicomFile);
-      imageSrc.value = dicomData.image;  // Assuming dicomData contains the image as a base64 string
-      dicomMetadata.value = extractMetadata(dicomData);  // Extract relevant metadata
+    if (file.type === 'application/dicom') {
+      const arrayBuffer = await file.arrayBuffer();
+      const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
+      dicomMetadata.value = dicomData.dict;
+      imageSrc.value = URL.createObjectURL(file);
     }
-  });
-  
-  // Function to extract and return the relevant metadata
-  function extractMetadata(dicomData) {
-    return {
-      patientName: dicomData.patientName || 'N/A',
-      studyDate: dicomData.studyDate || 'N/A',
-      modality: dicomData.modality || 'N/A',
-      // Add more metadata fields as needed
-    };
-  }
+  };
   </script>
   
   <style scoped>
   .dicom-viewer {
-    padding: 20px;
     text-align: center;
   }
-  
-  .image-container {
-    margin-bottom: 20px;
+  .file-input {
+    margin-bottom: 1rem;
   }
-  
-  .dicom-image {
+  .metadata {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+  }
+  .image-container {
+    margin-top: 1rem;
+  }
+  .image {
     max-width: 100%;
     height: auto;
-  }
-  
-  .metadata-container {
-    margin-top: 20px;
-    background-color: #f0f0f0;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: inline-block;
-    text-align: left;
-  }
-  
-  .metadata-container p {
-    font-size: 14px;
   }
   </style>
   
