@@ -8,10 +8,10 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ['dcmjs', 'cornerstone-core', 'cornerstone-tools', 'dicom-parser'],
-      exclude: ['cornerstone-core'] // Exclude from Vite's optimization
+      exclude: ['cornerstone-core'], // Exclude from Vite's dependency optimization
     },
     define: {
-      'process.env': {}, // Polyfill process.env for cornerstone compatibility
+      'process.env': {}, // Provide an empty object for process.env
     },
   },
 });
