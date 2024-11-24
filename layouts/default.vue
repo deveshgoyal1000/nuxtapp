@@ -1,18 +1,19 @@
 <template>
-    <div>
-      <header>
-        <!-- Optional header content -->
-      </header>
-      <main>
-        <NuxtPage />
-      </main>
-      <footer>
-        <!-- Optional footer content -->
-      </footer>
-    </div>
-  </template>
-  
-  <script setup>
-  // This is where you can add layout-specific logic if needed
-  </script>
-  
+  <div>
+    <header>
+      <!-- Header content here -->
+    </header>
+    
+    <main>
+      <slot />
+    </main>
+    
+    <footer>
+      <!-- Footer content here -->
+    </footer>
+  </div>
+</template>
+
+<script setup>
+// You can add logic for layout components here if needed
+</script>
