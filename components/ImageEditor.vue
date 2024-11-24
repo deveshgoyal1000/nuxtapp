@@ -2,7 +2,7 @@
   <div>
     <h3 class="text-lg font-semibold">Image Editor</h3>
     <div ref="stageContainer" class="border mt-4"></div>
-    
+
     <!-- First Upload Option (File Upload Button) -->
     <input type="file" @change="handleImageUpload" />
     
@@ -84,3 +84,18 @@ onMounted(() => {
   stage.value.add(layer.value);
 });
 </script>
+
+<style scoped>
+/* Optional: Styling to ensure both upload options are visible */
+input[type="file"] {
+  display: block;
+  margin-bottom: 10px;
+}
+
+#dropArea {
+  border: 2px dashed #cccccc;
+  padding: 20px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+</style>
