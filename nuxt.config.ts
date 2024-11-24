@@ -1,13 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  css: ['~/assets/css/tailwind.css'], // Include your Tailwind CSS file
-  modules: ['@nuxtjs/tailwindcss'],  // Add Tailwind CSS as a module
-
-  // PostCSS configuration
+  compatibilityDate: '2024-11-24', // Automatically added compatibility date
+  css: ['~/assets/css/tailwind.css'],
+  modules: ['@nuxtjs/tailwindcss'],
   postcss: {
     plugins: {
-      tailwindcss: {},  // Enable Tailwind CSS
-      autoprefixer: {}, // Enable Autoprefixer
+      tailwindcss: {},
+      autoprefixer: {},
     },
   },
 });
