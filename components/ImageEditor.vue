@@ -2,10 +2,10 @@
   <div>
     <h3 class="text-lg font-semibold">Image Editor</h3>
     
-    <!-- First Upload Option (File Upload Button) -->
+    <!-- File Upload Button -->
     <input type="file" @change="handleImageUpload" />
     
-    <!-- Second Upload Option (Drag and Drop Area) -->
+    <!-- Drag and Drop Area -->
     <div
       ref="dropArea"
       class="border p-4 mt-4 text-center"
