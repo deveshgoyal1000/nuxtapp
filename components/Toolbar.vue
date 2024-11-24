@@ -1,17 +1,38 @@
 <template>
   <div class="toolbar">
-    <!-- Add buttons for tools like zoom, brightness, crop, etc. -->
     <button @click="zoomIn">Zoom In</button>
     <button @click="zoomOut">Zoom Out</button>
+    <button @click="reset">Reset</button>
   </div>
 </template>
 
 <script setup>
-// Define methods like zoomIn, zoomOut, etc.
-const zoomIn = () => { /* logic for zooming in */ }
-const zoomOut = () => { /* logic for zooming out */ }
+function zoomIn() {
+  console.log("Zooming In...");
+}
+function zoomOut() {
+  console.log("Zooming Out...");
+}
+function reset() {
+  console.log("Resetting...");
+}
 </script>
 
 <style scoped>
-/* Add toolbar styles here */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #0056b3;
+}
 </style>
