@@ -1,38 +1,13 @@
 {
-  "name": "medical-imaging-app",
+  "name": "my-nuxt-app",
+  "version": "1.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "clean": "rimraf .nuxt node_modules"
+    "build": "nuxt build",
+    "start": "nuxt start"
   },
   "dependencies": {
-    "@nuxtjs/tailwindcss": "^6.12.2",
-    "autoprefixer": "^10.4.20",
-    "cornerstone-core": "^2.6.1",
-    "cornerstone-tools": "^6.0.10",
-    "cornerstone-wado-image-loader": "^3.3.2",
-    "dcmjs": "^0.35.0",
-    "dicom-parser": "^1.8.21",
-    "nuxt": "^3.14.1592",
-    "tailwindcss": "^3.4.15",
-    "vue": "^3.5.13"
-  },
-  "devDependencies": {
-    "rimraf": "^6.0.1"
-  },
-  "vite": {
-    "optimizeDeps": {
-      "include": [
-        "dcmjs",
-        "cornerstone-core",
-        "cornerstone-tools",
-        "dicom-parser"
-      ]
-    }
+    "nuxt": "latest"
   }
 }
