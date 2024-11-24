@@ -1,44 +1,27 @@
-<template>
-  <div id="app">
-    <div>
-      <h1>Dynamic Image Editor</h1>
-      <button @click="changeImage">Change Image</button>
-    </div>
-    <ImageEditor :imageSrc="imageUrl" />
-  </div>
-</template>
-
-<script>
-import { ref } from 'vue';
-import ImageEditor from './components/ImageEditor.vue';
-
-export default {
-  name: 'App',
-  components: {
-    ImageEditor,
-  },
-  setup() {
-    // Initial image source
-    const imageUrl = ref('https://via.placeholder.com/800x600.png?text=Initial+Image');
-
-    // Function to change the image source dynamically
-    const changeImage = () => {
-      imageUrl.value =
-        'https://via.placeholder.com/800x600.png?text=New+Image';
-    };
-
-    return {
-      imageUrl,
-      changeImage,
-    };
-  },
-};
-</script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  margin-top: 20px;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
 }
-</style>
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
