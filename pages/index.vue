@@ -1,21 +1,6 @@
 <template>
-  <div class="p-4">
-    <h1 class="text-2xl font-bold">Medical Imaging Tool</h1>
-    <input type="file" @change="handleFileUpload" />
-    <Toolbar @onToolSelect="onToolSelect" />
-    <Canvas />
+  <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
+    <h1 class="text-4xl font-bold text-blue-500">Medical Imaging App</h1>
+    <p class="mt-4 text-gray-600">Start building your medical image tools here.</p>
   </div>
 </template>
-
-<script setup>
-import Toolbar from '~/components/Toolbar.vue';
-import Canvas from '~/components/Canvas.vue';
-
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  console.log('Uploaded File:', file);
-};
-const onToolSelect = (tool) => {
-  console.log('Selected Tool:', tool);
-};
-</script>
