@@ -1,105 +1,62 @@
 <template>
-  <div>
-    <h3 class="text-lg font-semibold">Image Editor</h3>
+  <div class="upload-page">
+    <h1 class="text-2xl font-bold mb-4">Upload and Edit Images</h1>
     
-    <!-- File Upload Button (only one) -->
-    <input type="file" @change="handleImageUpload" />
+    <!-- Single File Input -->
+    <input 
+      type="file" 
+      @change="handleFileUpload" 
+      accept="image/*,application/dicom" 
+      class="file-input" 
+    />
 
-    <!-- Drag and Drop Area (only one) -->
-    <div
-      ref="dropArea"
-      class="border p-4 mt-4 text-center"
-      @dragover.prevent
-      @drop="handleDrop"
-    >
-      Drop image here or select from above
-    </div>
-
-    <!-- Container for Konva Stage -->
-    <div ref="stageContainer" class="border mt-4"></div>
+    <!-- Image Editor Component -->
+    <ImageEditor v-if="uploadedImage" :imageSrc="uploadedImage" />
   </div>
 </template>
 
 <script setup>
-import Konva from 'konva';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
+import ImageEditor from '~/components/ImageEditor.vue'; // Ensure path is correct
+import dcmjs from 'dcmjs';
 
-const stageContainer = ref(null);
-const stage = ref(null);
-const layer = ref(null);
-const imageElement = ref(null);
+// Reactive reference for the uploaded image
+const uploadedImage = ref(null);
 
-const handleImageUpload = (event) => {
+// Function to handle file uploads
+const handleFileUpload = async (event) => {
   const file = event.target.files[0];
-  if (file) {
-    loadImage(file);
-  }
-};
+  if (!file) return;
 
-const handleDrop = (event) => {
-  event.preventDefault();
-  const file = event.dataTransfer.files[0];
-  if (file) {
-    loadImage(file);
-  }
-};
-
-const loadImage = (file) => {
-  const reader = new FileReader();
-  reader.onload = () => {
-    // Create an image element
-    imageElement.value = new Image();
-    imageElement.value.src = reader.result;
-    imageElement.value.onload = () => {
-      // Dynamically resize the Konva stage to fit the image
-      if (stage.value) {
-        stage.value.width(imageElement.value.width);
-        stage.value.height(imageElement.value.height);
-      }
-
-      // Create Konva Image node
-      const konvaImage = new Konva.Image({
-        image: imageElement.value,
-        x: 0,
-        y: 0,
-        width: imageElement.value.width,
-        height: imageElement.value.height,
-      });
-
-      // Clear any previous images and add the new one
-      layer.value.removeChildren();
-      layer.value.add(konvaImage);
-      layer.value.batchDraw();
+  // Check if the file is a DICOM file
+  if (file.type === 'application/dicom') {
+    const arrayBuffer = await file.arrayBuffer();
+    const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
+    console.log('DICOM Data:', dicomData);
+    // You can process or display the DICOM data here
+  } else if (file.type.startsWith('image/')) {
+    // Handle image files
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImage.value = e.target.result; // Pass image data to ImageEditor
     };
-  };
-  reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
+  } else {
+    console.error('Unsupported file type:', file.type);
+  }
 };
-
-onMounted(() => {
-  // Initialize Konva stage with default size
-  stage.value = new Konva.Stage({
-    container: stageContainer.value,
-    width: 800,
-    height: 600,
-  });
-
-  // Initialize Konva layer
-  layer.value = new Konva.Layer();
-  stage.value.add(layer.value);
-});
 </script>
 
 <style scoped>
-/* Optional: Styling for file input and drop area */
-input[type="file"] {
-  display: block;
-  margin-bottom: 10px;
+.upload-page {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-#dropArea {
-  border: 2px dashed #cccccc;
-  padding: 20px;
-  margin-top: 10px;
-  cursor: pointer;
+.file-input {
+  margin-bottom: 10px;
+  padding: 10px;
 }
 </style>
