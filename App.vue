@@ -1,5 +1,10 @@
 <template>
-  <div class="p-4">
-    <slot />
+  <div>
+    <Navbar />
+    <NuxtPage />
   </div>
 </template>
+
+<script setup>
+import Navbar from '~/components/Navbar.vue';
+</script>
