@@ -13,5 +13,10 @@ export default defineNuxtConfig({
     define: {
       'process.env': {}, // Provide an empty object for process.env
     },
+    server: {
+      hmr: {
+        overlay: false, // Disable HMR error overlay
+      },
+    },
   },
 });
