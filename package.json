@@ -8,6 +8,10 @@
     "start": "nuxt start"
   },
   "dependencies": {
-    "nuxt": "latest"
+    "nuxt": "latest",
+    "tailwindcss": "^3.3.0"
+  },
+  "devDependencies": {
+    "@nuxt/types": "^3.0.0"
   }
 }
