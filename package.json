@@ -7,20 +7,27 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "clean": "rimraf .nuxt node_modules"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.2",
     "autoprefixer": "^10.4.20",
     "cornerstone-core": "^2.6.1",
     "cornerstone-tools": "^6.0.10",
-    "cornerstone-wado-image-loader": "^3.0.0",
+    "cornerstone-wado-image-loader": "^3.3.2",
+    "dcmjs": "^0.35.0",
     "dicom-parser": "^1.8.21",
+    "nuxt": "^3.14.1592",
     "tailwindcss": "^3.4.15",
-    "vue": "^3.5.13",
-    "nuxt": "^3.14.1592"
+    "vue": "^3.5.13"
   },
   "devDependencies": {
     "rimraf": "^6.0.1"
+  },
+  "vite": {
+    "optimizeDeps": {
+      "include": ["dcmjs", "cornerstone-core", "cornerstone-tools", "dicom-parser"]
+    }
   }
 }
