@@ -1,13 +1,15 @@
 <template>
-  <div>
-    <h1 class="text-2xl font-bold">Medical Imaging Tool</h1>
-    <input type="file" @change="handleFileUpload" />
+  <div class="p-4">
+    <h1 class="text-xl font-bold">Medical Imaging Tool</h1>
+    <input type="file" @change="handleFileUpload" accept=".png,.dcm" />
   </div>
 </template>
 
 <script setup>
-const handleFileUpload = (e) => {
-  const file = e.target.files[0];
-  console.log('File Uploaded:', file);
+import { ref } from 'vue';
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  console.log('Uploaded File:', file);
+  // Handle file logic here
 };
 </script>
