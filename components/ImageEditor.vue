@@ -1,8 +1,7 @@
 <template>
   <div>
     <h3 class="text-lg font-semibold">Image Editor</h3>
-    <div ref="stageContainer" class="border mt-4"></div>
-
+    
     <!-- First Upload Option (File Upload Button) -->
     <input type="file" @change="handleImageUpload" />
     
@@ -15,6 +14,9 @@
     >
       Drop image here or select from above
     </div>
+
+    <!-- Container for Konva Stage -->
+    <div ref="stageContainer" class="border mt-4"></div>
   </div>
 </template>
 
@@ -49,13 +51,13 @@ const loadImage = (file) => {
     imageElement.value = new Image();
     imageElement.value.src = reader.result;
     imageElement.value.onload = () => {
-      // Adjust stage size to match the image size
+      // Dynamically resize the Konva stage to fit the image
       if (stage.value) {
         stage.value.width(imageElement.value.width);
         stage.value.height(imageElement.value.height);
       }
 
-      // Create image node and add it to the layer
+      // Create Konva Image node
       const konvaImage = new Konva.Image({
         image: imageElement.value,
         x: 0,
@@ -64,6 +66,8 @@ const loadImage = (file) => {
         height: imageElement.value.height,
       });
 
+      // Clear any previous images and add the new one
+      layer.value.removeChildren();
       layer.value.add(konvaImage);
       layer.value.batchDraw();
     };
@@ -72,21 +76,21 @@ const loadImage = (file) => {
 };
 
 onMounted(() => {
-  // Initialize Konva stage
+  // Initialize Konva stage with default size
   stage.value = new Konva.Stage({
     container: stageContainer.value,
     width: 800,
     height: 600,
   });
 
-  // Create and add a layer to the stage
+  // Initialize Konva layer
   layer.value = new Konva.Layer();
   stage.value.add(layer.value);
 });
 </script>
 
 <style scoped>
-/* Optional: Styling to ensure both upload options are visible */
+/* Optional: Styling for file input and drop area */
 input[type="file"] {
   display: block;
   margin-bottom: 10px;
