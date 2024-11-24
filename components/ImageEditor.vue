@@ -88,34 +88,32 @@ function cropImage() {
 // Watch for the uploaded image change
 watch(uploadedImage, (newImage) => {
   if (newImage) {
-    // Log to debug the image source
     console.log("Image URL/Data URL: ", newImage);
 
     // Ensure the image is loaded properly
     const imageObj = new Image();
     imageObj.src = newImage;
 
+    // Onload function for image processing
     imageObj.onload = () => {
       console.log("Image loaded successfully.");
-
-      // Log the image dimensions to ensure it is loaded
       console.log("Image Dimensions:", imageObj.width, imageObj.height);
 
       // Create a Konva image element with the loaded image
       const konvaImage = new Konva.Image({
-        x: 0,
-        y: 0,
+        x: 50,  // Position on canvas
+        y: 50,  // Position on canvas
         image: imageObj,
         width: imageObj.width,
         height: imageObj.height,
       });
 
-      // Add the image to the layer and redraw
+      // Add the image to the Konva layer
       layer.value.add(konvaImage);
       layer.value.batchDraw();
     };
 
-    // Handle errors if the image cannot load
+    // Error handling if image fails to load
     imageObj.onerror = (e) => {
       console.error('Failed to load image', e);
     };
