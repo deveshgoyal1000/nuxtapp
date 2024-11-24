@@ -21,29 +21,40 @@
   
   // Function to handle DICOM file and extract metadata
   const handleDICOMFile = async (file) => {
-    const arrayBuffer = await file.arrayBuffer();
-    const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
-    dicomMetadata.value = dicomData.dict;
-    
-    // Create the DICOM image using dcmjs and render it on the canvas
-    const image = await loadDicomImage(arrayBuffer);
-    dicomImage.value = image;
-    renderDicomImage(image);
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
+      dicomMetadata.value = dicomData.dict;
+      
+      // Check if pixel data is present in the DICOM file
+      const pixelData = dicomData.dict['x7fe00010']; // DICOM tag for pixel data
+      if (pixelData) {
+        const image = await loadDicomImage(arrayBuffer);
+        dicomImage.value = image;
+        renderDicomImage(image);
+      } else {
+        console.error('No pixel data found in DICOM file');
+      }
+    } catch (error) {
+      console.error('Error processing DICOM file', error);
+    }
   };
   
   // Function to load and decode the DICOM image
   const loadDicomImage = async (arrayBuffer) => {
-    const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
-    const pixelData = dicomData.dict['x7fe00010']; // DICOM tag for pixel data
-    
-    // DICOM pixel data can be in different formats, handle accordingly
-    const width = dicomData.dict['x00280011']; // Width from DICOM metadata
-    const height = dicomData.dict['x00280010']; // Height from DICOM metadata
+    try {
+      const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
+      const pixelData = dicomData.dict['x7fe00010']; // DICOM tag for pixel data
+      const width = dicomData.dict['x00280011']; // Width from DICOM metadata
+      const height = dicomData.dict['x00280010']; // Height from DICOM metadata
   
-    // Assuming 8-bit grayscale (for simplicity; you might need to support more formats)
-    const pixels = new Uint8Array(pixelData); // Raw pixel data
-    
-    return { width, height, pixels };
+      // Assuming 8-bit grayscale (you might need to handle more formats)
+      const pixels = new Uint8Array(pixelData); // Raw pixel data
+  
+      return { width, height, pixels };
+    } catch (error) {
+      console.error('Error decoding DICOM image', error);
+    }
   };
   
   // Function to render the decoded DICOM image on a canvas
@@ -70,6 +81,8 @@
   
       // Put the image data onto the canvas
       ctx.putImageData(imageData, 0, 0);
+    } else {
+      console.error('Canvas or image is undefined');
     }
   };
   
