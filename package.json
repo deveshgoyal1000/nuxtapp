@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.2",
-    "autoprefixer": "^10.4.20",
     "canvas": "^2.11.2",
     "cornerstone-core": "^2.4.0",
     "cornerstone-tools": "^6.0.10",
@@ -21,12 +20,13 @@
     "naive-ui": "^2.40.1",
     "nuxt": "^3.14.1592",
     "pinia": "^2.2.6",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15",
     "vue": "^3.5.13",
     "vue-router": "latest"
   },
   "devDependencies": {
-    "rimraf": "^6.0.1"
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "rimraf": "^6.0.1",
+    "tailwindcss": "^3.4.15"
   }
 }
