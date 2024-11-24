@@ -1,10 +1,10 @@
 <template>
   <div>
     <h3 class="text-lg font-semibold">Image Editor</h3>
-    
+
     <!-- Image upload section -->
     <input type="file" @change="uploadImage" accept="image/*" class="mt-4" />
-    
+
     <!-- Konva stage container -->
     <div ref="stageContainer" class="border mt-4"></div>
   </div>
@@ -15,29 +15,17 @@ import Konva from 'konva';
 import { onMounted, ref } from 'vue';
 
 const stageContainer = ref(null);
-const imageUrl = ref(null);  // For storing the image URL after uploading
+let stage, layer, konvaImage;  // Keep references to the stage, layer, and image
 
 onMounted(() => {
-  const stage = new Konva.Stage({
+  stage = new Konva.Stage({
     container: stageContainer.value,
     width: 800,
     height: 600,
   });
 
-  const layer = new Konva.Layer();
+  layer = new Konva.Layer();
   stage.add(layer);
-
-  // Placeholder for the rectangle (it will be replaced by the image)
-  const rect = new Konva.Rect({
-    x: 100,
-    y: 100,
-    width: 200,
-    height: 100,
-    fill: 'blue',
-  });
-
-  layer.add(rect);
-  layer.draw();
 });
 
 // Image upload function
@@ -48,8 +36,8 @@ const uploadImage = (event) => {
 
     // Once the image is loaded, add it to the Konva canvas
     reader.onload = (e) => {
-      imageUrl.value = e.target.result;
-      addImageToCanvas(imageUrl.value);
+      const imageUrl = e.target.result;
+      addImageToCanvas(imageUrl);
     };
 
     reader.readAsDataURL(file);
@@ -58,18 +46,15 @@ const uploadImage = (event) => {
 
 // Function to add image to Konva canvas
 const addImageToCanvas = (src) => {
-  const stage = new Konva.Stage({
-    container: stageContainer.value,
-    width: 800,
-    height: 600,
-  });
-
-  const layer = new Konva.Layer();
-  stage.add(layer);
-
   const imageObj = new Image();
   imageObj.onload = () => {
-    const konvaImage = new Konva.Image({
+    // If an image already exists on the canvas, remove it before adding the new one
+    if (konvaImage) {
+      konvaImage.destroy();
+    }
+
+    // Create the Konva Image object
+    konvaImage = new Konva.Image({
       x: 50,
       y: 50,
       image: imageObj,
@@ -78,7 +63,7 @@ const addImageToCanvas = (src) => {
     });
 
     layer.add(konvaImage);
-    layer.draw();
+    layer.batchDraw(); // Redraw the layer to show the new image
   };
   imageObj.src = src;  // Set the image source (the uploaded file)
 };
