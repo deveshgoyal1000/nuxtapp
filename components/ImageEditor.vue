@@ -14,10 +14,21 @@ const canvasContainer = ref(null);
 let stage, layer, konvaImage;
 
 onMounted(() => {
-  if (!imageSrc) return;
+  if (process.client && imageSrc) {
+    initializeCanvas(imageSrc);
+  }
+});
 
-  const img = new Image();
-  img.src = imageSrc;
+// Watch for updates to imageSrc
+watch(() => imageSrc, (newSrc) => {
+  if (process.client && newSrc) {
+    initializeCanvas(newSrc);
+  }
+});
+
+function initializeCanvas(src) {
+  const img = new Image(); // Only runs in the browser
+  img.src = src;
 
   img.onload = () => {
     stage = new Konva.Stage({
@@ -38,18 +49,9 @@ onMounted(() => {
     layer.add(konvaImage);
     layer.batchDraw();
   };
-});
-
-// Watch for updates to imageSrc
-watch(() => imageSrc, (newSrc) => {
-  if (!stage || !konvaImage) return;
-
-  const newImg = new Image();
-  newImg.src = newSrc;
-
-  newImg.onload = () => {
-    konvaImage.image(newImg);
-    layer.batchDraw();
-  };
-});
+}
 </script>
+
+<template>
+  <div ref="canvasContainer" class="image-editor"></div>
+</template>
