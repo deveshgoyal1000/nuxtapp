@@ -2,83 +2,61 @@
   <div>
     <h3 class="text-lg font-semibold">Image Editor</h3>
     <div ref="stageContainer" class="border mt-4"></div>
+    <input type="file" @change="handleImageUpload" />
   </div>
 </template>
 
 <script setup>
 import Konva from 'konva';
-import { onMounted, ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 const stageContainer = ref(null);
-const imageFile = ref(null); // Reference to the uploaded image file
+const stage = ref(null);
+const layer = ref(null);
+const imageElement = ref(null);
 
-// Handle the image file change (file input)
-const handleFileUpload = (event) => {
+const handleImageUpload = (event) => {
   const file = event.target.files[0];
-  const reader = new FileReader();
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // Create an image element
+      imageElement.value = new Image();
+      imageElement.value.src = reader.result;
+      imageElement.value.onload = () => {
+        // Adjust stage size to match the image size
+        if (stage.value) {
+          stage.value.width(imageElement.value.width);
+          stage.value.height(imageElement.value.height);
+        }
 
-  reader.onload = () => {
-    // Use the image URL to load the image into Konva
-    const img = new Image();
-    img.src = reader.result;
-    
-    img.onload = () => {
-      const layer = new Konva.Layer();
-      const konvaImage = new Konva.Image({
-        x: 100,
-        y: 100,
-        image: img,
-        width: img.width / 2, // Resizing image initially
-        height: img.height / 2, // Resizing image initially
-        draggable: true, // Enable dragging
-      });
-
-      layer.add(konvaImage);
-      stage.add(layer);
-
-      // Allow resizing of the image by adding resizing handles
-      const resizeHandle = new Konva.Rect({
-        x: konvaImage.x() + konvaImage.width() - 10,
-        y: konvaImage.y() + konvaImage.height() - 10,
-        width: 10,
-        height: 10,
-        fill: 'red',
-        draggable: true,
-      });
-
-      resizeHandle.on('dragmove', () => {
-        // Resizing the image when resizing handle is dragged
-        const newWidth = resizeHandle.x() - konvaImage.x();
-        const newHeight = resizeHandle.y() - konvaImage.y();
-        konvaImage.width(newWidth);
-        konvaImage.height(newHeight);
-        layer.batchDraw();
-      });
-
-      layer.add(resizeHandle);
-      layer.batchDraw();
+        // Create image node and add it to the layer
+        const konvaImage = new Konva.Image({
+          image: imageElement.value,
+          x: 0,
+          y: 0,
+          width: imageElement.value.width,
+          height: imageElement.value.height,
+        });
+        
+        layer.value.add(konvaImage);
+        layer.value.batchDraw();
+      };
     };
-  };
-  reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
+  }
 };
 
 onMounted(() => {
-  const stage = new Konva.Stage({
+  // Initialize Konva stage
+  stage.value = new Konva.Stage({
     container: stageContainer.value,
     width: 800,
     height: 600,
   });
 
-  const layer = new Konva.Layer();
-  stage.add(layer);
-
-  // Add image upload functionality
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.addEventListener('change', handleFileUpload);
-
-  // Append the input element to the DOM
-  document.body.appendChild(input);
+  // Create and add a layer to the stage
+  layer.value = new Konva.Layer();
+  stage.value.add(layer.value);
 });
 </script>
