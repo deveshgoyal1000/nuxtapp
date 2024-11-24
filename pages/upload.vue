@@ -1,24 +1,62 @@
 <template>
-  <div>
-    <!-- Your image upload logic here -->
-    
-    <!-- Example: if a DICOM file is uploaded, pass it to DICOMViewer -->
-    <DICOMViewer v-if="isDICOMFile" :file="uploadedFile" />
+  <div class="upload-page">
+    <h1 class="text-2xl font-bold mb-4">Upload and Edit Images</h1>
+
+    <!-- Single File Input for Image Upload -->
+    <input 
+      type="file" 
+      @change="handleFileUpload" 
+      accept="image/*,application/dicom" 
+      class="file-input" 
+    />
+
+    <!-- Pass uploaded image data to ImageEditor -->
+    <ImageEditor v-if="uploadedImage" :imageSrc="uploadedImage" />
   </div>
 </template>
 
 <script setup>
-import DICOMViewer from '~/components/DICOMViewer.vue';
 import { ref } from 'vue';
+import ImageEditor from '~/components/ImageEditor.vue'; // Ensure correct path
+import dcmjs from 'dcmjs';
 
-const uploadedFile = ref(null);
-const isDICOMFile = ref(false);
+// Reactive reference for the uploaded image
+const uploadedImage = ref(null);
 
-const handleFileUpload = (event) => {
+// Function to handle file uploads
+const handleFileUpload = async (event) => {
   const file = event.target.files[0];
-  uploadedFile.value = file;
-  if (file && file.type === 'application/dicom') {
-    isDICOMFile.value = true;
+  if (!file) return;
+
+  // Check if the file is a DICOM file
+  if (file.type === 'application/dicom') {
+    const arrayBuffer = await file.arrayBuffer();
+    const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
+    console.log('DICOM Data:', dicomData);
+    // You can process or display the DICOM data here
+  } else if (file.type.startsWith('image/')) {
+    // Handle image files
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImage.value = e.target.result; // Pass image data to ImageEditor
+    };
+    reader.readAsDataURL(file);
+  } else {
+    console.error('Unsupported file type:', file.type);
   }
 };
 </script>
+
+<style scoped>
+.upload-page {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-input {
+  margin-bottom: 10px;
+  padding: 10px;
+}
+</style>
