@@ -1,17 +1,7 @@
 module.exports = {
-  content: [
-    './pages/**/*.{vue,js,ts,jsx,tsx}',
-    './components/**/*.{vue,js,ts,jsx,tsx}',
-    './layouts/**/*.{vue,js,ts,jsx,tsx}',
-    './plugins/**/*.{js,ts}',
-    './nuxt.config.{js,ts}'
-  ],
+  content: ['./components/**/*.{vue,js}', './layouts/**/*.vue', './pages/**/*.vue'],
   theme: {
-    extend: {
-      colors: {
-        primary: '#ff5733', // Example custom color
-      },
-    },
+    extend: {},
   },
   plugins: [],
-}
+};
