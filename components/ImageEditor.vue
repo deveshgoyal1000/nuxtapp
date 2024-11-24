@@ -1,11 +1,6 @@
 <template>
   <div>
     <h3 class="text-lg font-semibold">Image Editor</h3>
-
-    <!-- Image upload section -->
-    <input type="file" @change="uploadImage" accept="image/*" class="mt-4" />
-
-    <!-- Konva stage container -->
     <div ref="stageContainer" class="border mt-4"></div>
   </div>
 </template>
@@ -15,56 +10,75 @@ import Konva from 'konva';
 import { onMounted, ref } from 'vue';
 
 const stageContainer = ref(null);
-let stage, layer, konvaImage;  // Keep references to the stage, layer, and image
+const imageFile = ref(null); // Reference to the uploaded image file
+
+// Handle the image file change (file input)
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    // Use the image URL to load the image into Konva
+    const img = new Image();
+    img.src = reader.result;
+    
+    img.onload = () => {
+      const layer = new Konva.Layer();
+      const konvaImage = new Konva.Image({
+        x: 100,
+        y: 100,
+        image: img,
+        width: img.width / 2, // Resizing image initially
+        height: img.height / 2, // Resizing image initially
+        draggable: true, // Enable dragging
+      });
+
+      layer.add(konvaImage);
+      stage.add(layer);
+
+      // Allow resizing of the image by adding resizing handles
+      const resizeHandle = new Konva.Rect({
+        x: konvaImage.x() + konvaImage.width() - 10,
+        y: konvaImage.y() + konvaImage.height() - 10,
+        width: 10,
+        height: 10,
+        fill: 'red',
+        draggable: true,
+      });
+
+      resizeHandle.on('dragmove', () => {
+        // Resizing the image when resizing handle is dragged
+        const newWidth = resizeHandle.x() - konvaImage.x();
+        const newHeight = resizeHandle.y() - konvaImage.y();
+        konvaImage.width(newWidth);
+        konvaImage.height(newHeight);
+        layer.batchDraw();
+      });
+
+      layer.add(resizeHandle);
+      layer.batchDraw();
+    };
+  };
+  reader.readAsDataURL(file);
+};
 
 onMounted(() => {
-  stage = new Konva.Stage({
+  const stage = new Konva.Stage({
     container: stageContainer.value,
     width: 800,
     height: 600,
   });
 
-  layer = new Konva.Layer();
+  const layer = new Konva.Layer();
   stage.add(layer);
+
+  // Add image upload functionality
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.addEventListener('change', handleFileUpload);
+
+  // Append the input element to the DOM
+  document.body.appendChild(input);
 });
-
-// Image upload function
-const uploadImage = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-
-    // Once the image is loaded, add it to the Konva canvas
-    reader.onload = (e) => {
-      const imageUrl = e.target.result;
-      addImageToCanvas(imageUrl);
-    };
-
-    reader.readAsDataURL(file);
-  }
-};
-
-// Function to add image to Konva canvas
-const addImageToCanvas = (src) => {
-  const imageObj = new Image();
-  imageObj.onload = () => {
-    // If an image already exists on the canvas, remove it before adding the new one
-    if (konvaImage) {
-      konvaImage.destroy();
-    }
-
-    // Create the Konva Image object
-    konvaImage = new Konva.Image({
-      x: 50,
-      y: 50,
-      image: imageObj,
-      width: imageObj.width,
-      height: imageObj.height,
-    });
-
-    layer.add(konvaImage);
-    layer.batchDraw(); // Redraw the layer to show the new image
-  };
-  imageObj.src = src;  // Set the image source (the uploaded file)
-};
 </script>
