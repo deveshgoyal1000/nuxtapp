@@ -4,7 +4,7 @@
     
     <!-- File Upload Button (only one) -->
     <input type="file" @change="handleImageUpload" />
-    
+
     <!-- Drag and Drop Area (only one) -->
     <div
       ref="dropArea"
