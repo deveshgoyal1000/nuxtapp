@@ -87,11 +87,19 @@ function cropImage() {
 // Watch for the uploaded image change
 watch(uploadedImage, (newImage) => {
   if (newImage) {
+    // Log to debug the image source
+    console.log("Image URL/Data URL: ", newImage);
+
     // Ensure the image is loaded properly
     const imageObj = new Image();
     imageObj.src = newImage;
 
     imageObj.onload = () => {
+      console.log("Image loaded successfully.");
+
+      // Log the image dimensions to ensure it is loaded
+      console.log("Image Dimensions:", imageObj.width, imageObj.height);
+
       const konvaImage = new Konva.Image({
         x: 0,
         y: 0,
@@ -106,8 +114,8 @@ watch(uploadedImage, (newImage) => {
     };
 
     // Handle errors if the image cannot load
-    imageObj.onerror = () => {
-      console.error('Failed to load image');
+    imageObj.onerror = (e) => {
+      console.error('Failed to load image', e);
     };
   }
 });
@@ -127,6 +135,7 @@ watch(uploadedImage, (newImage) => {
   width: 100%;
   height: 500px; /* Set a fixed height for the canvas */
   background-color: #f3f3f3;
+  display: block;
 }
 
 .controls {
