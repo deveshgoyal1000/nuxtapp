@@ -5,26 +5,87 @@
       <p><strong>Study Date:</strong> {{ dicomMetadata.StudyDate }}</p>
       
       <!-- Display DICOM image if applicable -->
-      <img v-if="dicomImage" :src="dicomImage" alt="DICOM Image" class="dicom-image" />
+      <div v-if="dicomImage">
+        <canvas ref="dicomCanvas"></canvas>
+      </div>
     </div>
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import dcmjs from 'dcmjs';
   
   const dicomMetadata = ref({});
-  const dicomImage = ref('');
+  const dicomImage = ref(null);
+  const dicomCanvas = ref(null);
   
   // Function to handle DICOM file and extract metadata
   const handleDICOMFile = async (file) => {
     const arrayBuffer = await file.arrayBuffer();
     const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
     dicomMetadata.value = dicomData.dict;
-    dicomImage.value = URL.createObjectURL(new Blob([arrayBuffer]));
+    
+    // Create the DICOM image using dcmjs and render it on the canvas
+    const image = await loadDicomImage(arrayBuffer);
+    dicomImage.value = image;
+    renderDicomImage(image);
   };
   
-  // You can call `handleDICOMFile(file)` with a DICOM file from your upload input or another source
+  // Function to load and decode the DICOM image
+  const loadDicomImage = async (arrayBuffer) => {
+    const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
+    const pixelData = dicomData.dict['x7fe00010']; // DICOM tag for pixel data
+    
+    // DICOM pixel data can be in different formats, handle accordingly
+    const width = dicomData.dict['x00280011']; // Width from DICOM metadata
+    const height = dicomData.dict['x00280010']; // Height from DICOM metadata
+  
+    // Assuming 8-bit grayscale (for simplicity; you might need to support more formats)
+    const pixels = new Uint8Array(pixelData); // Raw pixel data
+    
+    return { width, height, pixels };
+  };
+  
+  // Function to render the decoded DICOM image on a canvas
+  const renderDicomImage = (image) => {
+    const canvas = dicomCanvas.value;
+    const ctx = canvas.getContext('2d');
+    
+    if (image && ctx) {
+      // Set canvas size
+      canvas.width = image.width;
+      canvas.height = image.height;
+  
+      // Create an image data object and put pixel data
+      const imageData = ctx.createImageData(image.width, image.height);
+      
+      // For grayscale images, assign pixel data to the RGBA channels
+      for (let i = 0; i < image.pixels.length; i++) {
+        const pixelValue = image.pixels[i];
+        imageData.data[i * 4] = pixelValue;     // R
+        imageData.data[i * 4 + 1] = pixelValue; // G
+        imageData.data[i * 4 + 2] = pixelValue; // B
+        imageData.data[i * 4 + 3] = 255;       // A (alpha)
+      }
+  
+      // Put the image data onto the canvas
+      ctx.putImageData(imageData, 0, 0);
+    }
+  };
+  
+  onMounted(() => {
+    // For example, if you want to call the function with a file input
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.dcm';
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        handleDICOMFile(file);
+      }
+    });
+    document.body.appendChild(fileInput);
+  });
   </script>
   
   <style scoped>
