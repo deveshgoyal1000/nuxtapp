@@ -1,4 +1,5 @@
-// nuxt.config.js or nuxt.config.ts
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-25',
+  pages: true,   // Ensure that Nuxt's pages system is enabled
+  layouts: true, // Ensure that Nuxt's layouts system is enabled
+  // You can add other configurations here as needed
 })
