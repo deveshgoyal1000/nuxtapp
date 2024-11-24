@@ -13,12 +13,13 @@
     "dcmjs": "^0.12.0",
     "konva": "^9.2.0",
     "naive-ui": "^2.34.3",
+    "nuxt": "^3.14.1592",
     "pinia": "^2.0.21",
     "vue": "^3.3.4"
   },
   "devDependencies": {
-    "tailwindcss": "^3.3.3",
+    "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
-    "autoprefixer": "^10.4.13"
+    "tailwindcss": "^3.3.3"
   }
 }
