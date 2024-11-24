@@ -1,41 +1,40 @@
 <template>
   <div class="image-editor">
-    <h3 class="text-lg font-semibold">Image Editor</h3>
-    
-    <!-- Display uploaded image -->
-    <img v-if="imageSrc" :src="imageSrc" alt="Uploaded Image" class="image-preview" />
-
-    <!-- Optional tools for manipulation like zoom and crop can be added here -->
-    <!-- You could use libraries like Konva for image manipulation -->
+    <h2 class="text-xl font-bold mb-4">Image Editor</h2>
+    <div class="editor-controls">
+      <!-- Add editing controls here later -->
+      <p>Image editing functionality goes here (e.g., crop, zoom, etc.)</p>
+    </div>
+    <div v-if="imageSrc">
+      <img :src="imageSrc" alt="Image for editing" class="editable-image" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
-const imageSrc = defineProps({
+defineProps({
   imageSrc: {
     type: String,
     required: true,
   },
 });
-
-const zoomLevel = ref(1);
-const crop = ref(null); // Crop functionality can be added as needed
-
-// Add methods for zoom, brightness, contrast, etc.
 </script>
 
 <style scoped>
 .image-editor {
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.image-preview {
+.editor-controls {
+  margin-bottom: 1rem;
+}
+
+.editable-image {
   max-width: 100%;
   max-height: 400px;
-  margin-top: 20px;
+  object-fit: contain;
 }
 </style>
