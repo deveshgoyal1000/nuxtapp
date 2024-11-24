@@ -1720,9 +1720,9 @@ core-util-is@~1.0.0:
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
 
 cornerstone-core@^2.4.0, cornerstone-core@^2.6.0:
-  version "2.4.0"
-  resolved "https://registry.npmjs.org/cornerstone-core/-/cornerstone-core-2.4.0.tgz"
-  integrity sha512-ZpmO2UG635NGRUs5pGZ7Lfq4NAaUcgvHPzIAIPFcVSa0iYCwuPLeUFY9ehFxFb3yVi5W1kZekslQBTxT6A0BWg==
+  version "2.6.1"
+  resolved "https://registry.npmjs.org/cornerstone-core/-/cornerstone-core-2.6.1.tgz"
+  integrity sha512-LAXjXwNnK2W65ZxpE7phVLjbijkYUrAQIGv5xqKjK8+dmIGlBxqvPHnyGwEqVDyKOWVrpXP6ymUPwrGGRwzgMg==
 
 cornerstone-math@0.1.10:
   version "0.1.10"

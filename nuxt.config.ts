@@ -7,14 +7,15 @@ export default defineNuxtConfig({
     transpile: ['dcmjs', 'cornerstone-core', 'cornerstone-tools', 'dicom-parser'],
     extend(config, { isClient, isServer }) {
       if (isServer) {
+        // Handle server-side dependencies that need to be externalized
         config.externals = { canvas: 'commonjs canvas' };
       }
     },
   },
   vite: {
     optimizeDeps: {
-      include: ['dcmjs', 'cornerstone-core', 'cornerstone-tools', 'dicom-parser'],
-      exclude: ['cornerstone-core'],  // Exclude cornerstone-core from Vite's optimization
+      // Exclude cornerstone-core from Vite's optimization (no need to include it)
+      exclude: ['cornerstone-core'],
     },
   },
 });
