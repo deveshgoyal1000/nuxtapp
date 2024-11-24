@@ -1,3 +1,9 @@
 export default defineNuxtConfig({
-  // modules: ['@pinia/nuxt'], // Comment out Pinia temporarily
+  css: [],
+  postcss: {
+    plugins: {
+      autoprefixer: {},
+      tailwindcss: {}, // Example if you're using Tailwind CSS
+    },
+  },
 });
