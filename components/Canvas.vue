@@ -1,82 +1,80 @@
 <template>
-  <div>
-    <div ref="canvasContainer" class="canvas-container">
-      <img ref="imageCanvas" :src="image" id="imageCanvas" />
-    </div>
-    <div class="controls">
-      <button @click="crop">Crop</button>
-      <button @click="reset">Reset</button>
-      <label>Brightness</label>
-      <input type="range" min="50" max="150" v-model="brightness" @input="adjustBrightness" />
-      <label>Contrast</label>
-      <input type="range" min="50" max="150" v-model="contrast" @input="adjustContrast" />
-    </div>
+  <div ref="canvasContainer" class="canvas-container">
+    <canvas id="imageCanvas"></canvas>
   </div>
 </template>
 
 <script setup>
-import Cropper from "cropperjs";
-import "cropperjs/dist/cropper.css";
-
-const cropper = ref(null);
+import { ref, watch, onMounted } from 'vue';
 
 const props = defineProps({
   image: {
     type: String,
     required: true,
   },
+  zoomLevel: {
+    type: Number,
+    required: true,
+  },
 });
 
-const brightness = ref(100);
-const contrast = ref(100);
+const canvasContainer = ref(null);
+const canvas = ref(null);
+const ctx = ref(null);
 
+// Initialize canvas and render image
 onMounted(() => {
-  const imageElement = document.getElementById("imageCanvas");
-  cropper.value = new Cropper(imageElement, {
-    aspectRatio: 16 / 9,
-    viewMode: 1,
-  });
+  canvas.value = document.getElementById('imageCanvas');
+  ctx.value = canvas.value.getContext('2d');
+  
+  // Resize canvas to fit the container
+  canvas.value.width = canvasContainer.value.offsetWidth;
+  canvas.value.height = canvasContainer.value.offsetHeight;
+
+  renderImage();
 });
 
-const crop = () => {
-  const canvas = cropper.value.getCroppedCanvas();
-  const croppedImage = canvas.toDataURL("image/jpeg");
-  console.log(croppedImage); // Save or render the cropped image
-};
+// Watch for zoomLevel changes
+watch(() => props.zoomLevel, () => {
+  renderImage();
+});
 
-const reset = () => {
-  cropper.value.reset();
-};
+// Function to render the image on the canvas with zoom
+const renderImage = () => {
+  if (!props.image) return;
 
-const adjustBrightness = () => {
-  const filter = `brightness(${brightness.value}%) contrast(${contrast.value}%)`;
-  cropper.value.image.style.filter = filter;
-};
+  const img = new Image();
+  img.src = props.image;
+  img.onload = () => {
+    const canvasWidth = canvas.value.width;
+    const canvasHeight = canvas.value.height;
 
-const adjustContrast = () => {
-  const filter = `brightness(${brightness.value}%) contrast(${contrast.value}%)`;
-  cropper.value.image.style.filter = filter;
+    // Apply zoom by scaling the image
+    const scaledWidth = img.width * props.zoomLevel;
+    const scaledHeight = img.height * props.zoomLevel;
+
+    // Calculate the position to center the image on the canvas
+    const offsetX = (canvasWidth - scaledWidth) / 2;
+    const offsetY = (canvasHeight - scaledHeight) / 2;
+
+    // Clear canvas and draw the scaled image
+    ctx.value.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.value.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
+  };
 };
 </script>
 
-<style>
+<style scoped>
 .canvas-container {
-  margin: 20px auto;
-  max-width: 800px;
-  max-height: 600px;
-  overflow: hidden;
+  width: 100%;
+  height: 500px; /* Adjust this based on your design */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
   border: 1px solid #ccc;
 }
-
-.controls {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.controls input {
-  width: 300px;
-  margin: auto;
-}
 </style>
+git 
