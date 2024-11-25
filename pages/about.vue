@@ -1,7 +1,7 @@
-<template>
-    <div>
-      <h1>About Page</h1>
-      <p>Welcome to the About page!</p>
-    </div>
-  </template>
-  
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100;
+}
