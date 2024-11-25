@@ -1,5 +1,6 @@
 # Medical Imaging App
 
+
 The **Medical Imaging App** is a modern web application designed to handle medical images such as DICOM files. It offers features for image manipulation, DICOM metadata display, and real-world measurement conversions. Built with Nuxt 3, the app leverages cutting-edge tools for seamless functionality.
 
 ---
