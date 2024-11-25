@@ -7,8 +7,6 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
-
 const { zoomLevel, setZoomLevel } = defineProps({
   zoomLevel: {
     type: Number,
@@ -22,18 +20,18 @@ const { zoomLevel, setZoomLevel } = defineProps({
 
 const zoomIn = () => {
   const newZoomLevel = zoomLevel + 0.1;
-  setZoomLevel(newZoomLevel); // Update the zoom level in the parent component
+  setZoomLevel(newZoomLevel);
 };
 
 const zoomOut = () => {
   if (zoomLevel > 0.1) {
     const newZoomLevel = zoomLevel - 0.1;
-    setZoomLevel(newZoomLevel); // Update the zoom level in the parent component
+    setZoomLevel(newZoomLevel);
   }
 };
 
 const reset = () => {
-  setZoomLevel(1); // Reset zoom level to default
+  setZoomLevel(1);
 };
 </script>
 
