@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="viewer">
     <h1>Upload and View Medical Images</h1>
-    <input type="file" @change="uploadFile" accept="image/*" />
+    <input type="file" @change="uploadFile" accept="image/*" class="file-input" />
 
     <!-- Toolbar -->
     <Toolbar :zoomLevel="zoomLevel" :setZoomLevel="setZoomLevel" />
@@ -36,11 +36,28 @@ const setZoomLevel = (newZoomLevel) => {
 </script>
 
 <style scoped>
-h1 {
-  margin-bottom: 20px;
+.viewer {
+  margin-top: 50px;
+  padding: 20px;
+  text-align: center;
 }
 
-input {
+h1 {
+  font-size: 2.5em;
   margin-bottom: 20px;
+  color: #f8d210;
 }
-</style>
+
+.file-input {
+  margin: 20px auto;
+  padding: 10px;
+  background: #fff;
+  border: none;
+  color: #333;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.3s ease;
+}
+
+.
