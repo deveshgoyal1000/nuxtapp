@@ -10,13 +10,10 @@
 
 <style scoped>
 h1 {
-  text-align: center;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 p {
-  text-align: center;
-  margin-top: 10px;
   color: #555;
 }
 </style>
