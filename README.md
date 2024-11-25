@@ -65,6 +65,7 @@ The **Medical Imaging App** is a modern web application designed to handle medic
   - `cropperjs` for image cropping
   - `dicom-parser` for parsing DICOM metadata
 - **UI**: Tailwind CSS, Naive UI
+
 - **State Management**: Pinia
 
 
