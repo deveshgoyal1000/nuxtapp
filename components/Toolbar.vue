@@ -1,56 +1,48 @@
 <template>
   <div class="toolbar">
-    <button @click="zoomIn">Zoom In</button>
-    <button @click="zoomOut">Zoom Out</button>
-    <button @click="reset">Reset</button>
+    <button @click="decreaseZoom" class="zoom-btn">-</button>
+    <span>{{ zoomLevel }}</span>
+    <button @click="increaseZoom" class="zoom-btn">+</button>
   </div>
 </template>
 
 <script setup>
-const { zoomLevel, setZoomLevel } = defineProps({
-  zoomLevel: {
-    type: Number,
-    required: true,
-    validator: (value) => value > 0, // Ensure zoom level is always positive
-  },
-  setZoomLevel: {
-    type: Function,
-    required: true,
-  },
+const props = defineProps({
+  zoomLevel: Number,
+  setZoomLevel: Function,
 });
 
-const zoomIn = () => {
-  setZoomLevel(zoomLevel + 0.1);
+const increaseZoom = () => {
+  props.setZoomLevel(props.zoomLevel + 0.1);
 };
 
-const zoomOut = () => {
-  if (zoomLevel > 0.1) {
-    setZoomLevel(zoomLevel - 0.1);
+const decreaseZoom = () => {
+  if (props.zoomLevel > 0.1) {
+    props.setZoomLevel(props.zoomLevel - 0.1);
   }
-};
-
-const reset = () => {
-  setZoomLevel(1);
 };
 </script>
 
 <style scoped>
 .toolbar {
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-top: 20px;
 }
 
-button {
-  padding: 8px 12px;
-  background-color: #007bff;
+.zoom-btn {
+  background-color: #4c8bf5;
   color: white;
-  border: none;
+  font-size: 18px;
+  padding: 10px 15px;
   border-radius: 5px;
+  border: none;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #0056b3;
+.zoom-btn:hover {
+  background-color: #3578d0;
 }
 </style>
