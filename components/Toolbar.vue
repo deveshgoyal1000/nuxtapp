@@ -7,17 +7,26 @@
 </template>
 
 <script setup>
-function zoomIn() {
-  console.log("Zooming In...");
-}
+import { emit } from 'vue';
 
-function zoomOut() {
-  console.log("Zooming Out...");
-}
+let zoomLevel = ref(1);
 
-function reset() {
-  console.log("Resetting...");
-}
+const zoomIn = () => {
+  zoomLevel.value += 0.1;
+  emit('update:zoomLevel', zoomLevel.value);
+};
+
+const zoomOut = () => {
+  if (zoomLevel.value > 0.1) {
+    zoomLevel.value -= 0.1;
+  }
+  emit('update:zoomLevel', zoomLevel.value);
+};
+
+const reset = () => {
+  zoomLevel.value = 1;
+  emit('update:zoomLevel', zoomLevel.value);
+};
 </script>
 
 <style scoped>
@@ -26,7 +35,6 @@ function reset() {
   gap: 10px;
   margin-bottom: 10px;
 }
-
 button {
   padding: 8px 12px;
   background-color: #007bff;
@@ -35,7 +43,6 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
-
 button:hover {
   background-color: #0056b3;
 }
