@@ -1,16 +1,37 @@
 <template>
   <div class="toolbar">
-    <button @click="setZoomLevel(zoomLevel + 0.1)">Zoom In</button>
-    <button @click="setZoomLevel(zoomLevel - 0.1)">Zoom Out</button>
-    <button @click="setZoomLevel(1)">Reset</button>
+    <button @click="zoomIn">Zoom In</button>
+    <button @click="zoomOut">Zoom Out</button>
+    <button @click="reset">Reset</button>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
-  zoomLevel: Number,
-  setZoomLevel: Function,
+const { zoomLevel, setZoomLevel } = defineProps({
+  zoomLevel: {
+    type: Number,
+    required: true,
+    validator: (value) => value > 0, // Ensure zoom level is always positive
+  },
+  setZoomLevel: {
+    type: Function,
+    required: true,
+  },
 });
+
+const zoomIn = () => {
+  setZoomLevel(zoomLevel + 0.1);
+};
+
+const zoomOut = () => {
+  if (zoomLevel > 0.1) {
+    setZoomLevel(zoomLevel - 0.1);
+  }
+};
+
+const reset = () => {
+  setZoomLevel(1);
+};
 </script>
 
 <style scoped>
