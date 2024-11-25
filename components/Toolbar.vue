@@ -7,17 +7,34 @@
 </template>
 
 <script setup>
-function zoomIn() {
-  console.log("Zooming In...");
-}
+import { defineProps } from 'vue';
 
-function zoomOut() {
-  console.log("Zooming Out...");
-}
+const { zoomLevel, setZoomLevel } = defineProps({
+  zoomLevel: {
+    type: Number,
+    required: true
+  },
+  setZoomLevel: {
+    type: Function,
+    required: true
+  }
+});
 
-function reset() {
-  console.log("Resetting...");
-}
+const zoomIn = () => {
+  const newZoomLevel = zoomLevel + 0.1;
+  setZoomLevel(newZoomLevel); // Update the zoom level in the parent component
+};
+
+const zoomOut = () => {
+  if (zoomLevel > 0.1) {
+    const newZoomLevel = zoomLevel - 0.1;
+    setZoomLevel(newZoomLevel); // Update the zoom level in the parent component
+  }
+};
+
+const reset = () => {
+  setZoomLevel(1); // Reset zoom level to default
+};
 </script>
 
 <style scoped>
