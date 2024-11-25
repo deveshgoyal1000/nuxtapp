@@ -6,19 +6,18 @@
       <h2>Uploaded Image Preview:</h2>
       <img :src="uploadedImage" alt="Uploaded Image" />
     </div>
-    <Canvas />
-    <Toolbar />
-    <MetadataViewer />
+    <Toolbar :zoomLevel="zoomLevel" @update:zoomLevel="updateZoom" />
+    <Canvas :image="uploadedImage" :zoomLevel="zoomLevel" />
   </div>
 </template>
 
 <script setup>
 import Canvas from '@/components/Canvas.vue';
 import Toolbar from '@/components/Toolbar.vue';
-import MetadataViewer from '@/components/MetadataViewer.vue';
 import { ref } from 'vue';
 
 const uploadedImage = ref(null);
+const zoomLevel = ref(1);
 
 function uploadFile(event) {
   const file = event.target.files[0];
@@ -29,6 +28,10 @@ function uploadFile(event) {
     };
     reader.readAsDataURL(file); // Read the file as a data URL
   }
+}
+
+function updateZoom(newZoomLevel) {
+  zoomLevel.value = newZoomLevel;
 }
 </script>
 
