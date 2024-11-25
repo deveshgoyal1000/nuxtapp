@@ -21,6 +21,7 @@ const props = defineProps({
 const canvasContainer = ref(null);
 const canvas = ref(null);
 const ctx = ref(null);
+const originalImage = ref(null); // Store the original image dimensions
 
 // Initialize canvas and render the image
 onMounted(() => {
@@ -47,6 +48,8 @@ const renderImage = () => {
   img.src = props.image;
 
   img.onload = () => {
+    originalImage.value = { width: img.width, height: img.height }; // Store original dimensions
+
     const containerWidth = canvasContainer.value.offsetWidth;
     const containerHeight = canvasContainer.value.offsetHeight;
 
