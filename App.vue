@@ -1,49 +1,44 @@
 <template>
-  <div>
-    <h1>Welcome to the Medical Imaging App</h1>
-    <input type="file" @change="uploadFile" accept="image/*" />
-
-    <!-- Zoom Controls -->
-    <Toolbar :zoomLevel="zoomLevel" :setZoomLevel="setZoomLevel" />
-
-    <!-- Canvas for zoomable image -->
-    <Canvas v-if="uploadedImage" :zoomLevel="zoomLevel" :image="uploadedImage" />
+  <div id="app">
+    <h1>Image Manipulation and DICOM Viewer</h1>
+    <input type="file" @change="handleFileUpload" />
+    <div v-if="isImage">
+      <Canvas :image="fileSrc" />
+    </div>
+    <div v-if="isDicom">
+      <DicomViewer :dicomFile="uploadedFile" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import Canvas from '@/components/Canvas.vue';
-import Toolbar from '@/components/Toolbar.vue';
+import { ref } from "vue";
+import Canvas from "./components/Canvas.vue";
+import DicomViewer from "./components/DicomViewer.vue";
 
-const uploadedImage = ref(null);
-const zoomLevel = ref(1); // Initial zoom level
+const uploadedFile = ref(null);
+const fileSrc = ref(null);
+const isImage = ref(false);
+const isDicom = ref(false);
 
-// Function to handle image upload
-function uploadFile(event) {
+const handleFileUpload = (event) => {
   const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedImage.value = e.target.result; // Store image preview URL
-    };
-    reader.readAsDataURL(file); // Read the file as a data URL
-  }
-}
+  uploadedFile.value = file;
 
-// Function to update zoom level
-const setZoomLevel = (newZoomLevel) => {
-  zoomLevel.value = newZoomLevel;
+  if (file.type === "image/jpeg" || file.type === "image/png") {
+    fileSrc.value = URL.createObjectURL(file);
+    isImage.value = true;
+    isDicom.value = false;
+  } else if (file.name.endsWith(".dcm")) {
+    isDicom.value = true;
+    isImage.value = false;
+  }
 };
 </script>
 
-<style scoped>
-h1 {
+<style>
+#app {
   text-align: center;
-  margin-bottom: 20px;
-}
-
-input {
-  margin-bottom: 20px;
+  margin: 20px;
 }
 </style>
