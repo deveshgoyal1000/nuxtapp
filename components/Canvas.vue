@@ -1,49 +1,55 @@
 <template>
-  <div ref="canvasContainer" class="canvas-container">
-    <canvas id="imageCanvas" width="500" height="500"></canvas>
+  <div class="canvas-container">
+    <canvas ref="canvas" width="600" height="400"></canvas>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 
-const canvasContainer = ref(null);
+const props = defineProps({
+  image: String, // Image data URL from the parent
+  zoomLevel: Number, // Zoom level from the parent
+});
+
+const canvas = ref(null);
+const ctx = ref(null);
+const imageObj = ref(null);
 
 onMounted(() => {
-  const canvas = document.getElementById('imageCanvas');
-  const ctx = canvas.getContext('2d');
+  ctx.value = canvas.value.getContext('2d');
+  imageObj.value = new Image();
   
-  // Set canvas size to match container size
-  canvas.width = canvasContainer.value.offsetWidth;
-  canvas.height = canvasContainer.value.offsetHeight;
-
-  // Example: Image rendering logic
-  const img = new Image();
-  img.src = 'path_to_image.jpg'; // Replace with your image path
-
-  img.onload = () => {
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  imageObj.value.onload = () => {
+    drawImage();
   };
+  
+  watch(() => props.image, (newImage) => {
+    if (newImage) {
+      imageObj.value.src = newImage;
+    }
+  });
 
-  // Resize handler to adjust canvas size dynamically
-  window.addEventListener('resize', () => {
-    canvas.width = canvasContainer.value.offsetWidth;
-    canvas.height = canvasContainer.value.offsetHeight;
-    // Re-render the image on resize
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  watch(() => props.zoomLevel, () => {
+    if (props.image) {
+      drawImage();
+    }
   });
 });
+
+const drawImage = () => {
+  const scale = props.zoomLevel || 1;
+  ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
+  ctx.value.drawImage(imageObj.value, 0, 0, imageObj.value.width * scale, imageObj.value.height * scale);
+};
 </script>
 
 <style scoped>
 .canvas-container {
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 canvas {
   border: 1px solid #ccc;
 }
