@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.7.0",
+    "cropperjs": "^1.6.2",
     "naive-ui": "^2.40.1",
     "nuxt": "^3.14.0",
     "pinia": "^2.0.0"
