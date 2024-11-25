@@ -2,49 +2,19 @@
   <div>
     <!-- Navigation -->
     <nav class="navbar">
-      <router-link to="/" class="nav-link">Home</router-link>
-      <router-link to="/about" class="nav-link">About</router-link>
-      <router-link to="/upload" class="nav-link">Upload</router-link>
+      <NuxtLink to="/" class="nav-link">Home</NuxtLink>
+      <NuxtLink to="/about" class="nav-link">About</NuxtLink>
+      <NuxtLink to="/viewer" class="nav-link">Upload</NuxtLink>
     </nav>
 
     <!-- Main Content -->
     <div class="content">
-      <h1>Welcome to the Medical Imaging App</h1>
-      <input type="file" @change="uploadFile" accept="image/*" />
-
-      <!-- Zoom Controls -->
-      <Toolbar :zoomLevel="zoomLevel" :setZoomLevel="setZoomLevel" />
-
-      <!-- Canvas for zoomable image -->
-      <Canvas v-if="uploadedImage" :zoomLevel="zoomLevel" :image="uploadedImage" />
+      <NuxtPage />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import Canvas from '@/components/Canvas.vue';
-import Toolbar from '@/components/Toolbar.vue';
-
-const uploadedImage = ref(null);
-const zoomLevel = ref(1); // Initial zoom level
-
-// Function to handle image upload
-function uploadFile(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedImage.value = e.target.result; // Store image preview URL
-    };
-    reader.readAsDataURL(file); // Read the file as a data URL
-  }
-}
-
-// Function to update zoom level
-const setZoomLevel = (newZoomLevel) => {
-  zoomLevel.value = newZoomLevel;
-};
 </script>
 
 <style scoped>
@@ -71,13 +41,5 @@ const setZoomLevel = (newZoomLevel) => {
 .content {
   text-align: center;
   margin-top: 20px;
-}
-
-h1 {
-  margin-bottom: 20px;
-}
-
-input {
-  margin-bottom: 20px;
 }
 </style>
