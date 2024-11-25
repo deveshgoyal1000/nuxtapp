@@ -1,13 +1,23 @@
 <template>
   <div>
-    <h1>Welcome to the Medical Imaging App</h1>
-    <input type="file" @change="uploadFile" accept="image/*" />
+    <!-- Navigation -->
+    <nav class="navbar">
+      <router-link to="/" class="nav-link">Home</router-link>
+      <router-link to="/about" class="nav-link">About</router-link>
+      <router-link to="/upload" class="nav-link">Upload</router-link>
+    </nav>
 
-    <!-- Zoom Controls -->
-    <Toolbar :zoomLevel="zoomLevel" :setZoomLevel="setZoomLevel" />
+    <!-- Main Content -->
+    <div class="content">
+      <h1>Welcome to the Medical Imaging App</h1>
+      <input type="file" @change="uploadFile" accept="image/*" />
 
-    <!-- Canvas for zoomable image -->
-    <Canvas v-if="uploadedImage" :zoomLevel="zoomLevel" :image="uploadedImage" />
+      <!-- Zoom Controls -->
+      <Toolbar :zoomLevel="zoomLevel" :setZoomLevel="setZoomLevel" />
+
+      <!-- Canvas for zoomable image -->
+      <Canvas v-if="uploadedImage" :zoomLevel="zoomLevel" :image="uploadedImage" />
+    </div>
   </div>
 </template>
 
@@ -38,8 +48,32 @@ const setZoomLevel = (newZoomLevel) => {
 </script>
 
 <style scoped>
-h1 {
+/* Navigation Bar */
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  background-color: #007bff;
+  padding: 10px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+/* Main Content */
+.content {
   text-align: center;
+  margin-top: 20px;
+}
+
+h1 {
   margin-bottom: 20px;
 }
 
