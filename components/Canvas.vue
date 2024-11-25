@@ -1,80 +1,53 @@
 <template>
-  <div ref="canvasContainer" class="canvas-container">
-    <canvas id="imageCanvas"></canvas>
+  <div class="canvas-container">
+    <canvas ref="canvas" :width="width" :height="height"></canvas>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 const props = defineProps({
-  image: {
-    type: String,
-    required: true,
-  },
-  zoomLevel: {
-    type: Number,
-    required: true,
-  },
+  image: String,
+  zoomLevel: Number,
 });
 
-const canvasContainer = ref(null);
-const canvas = ref(null);
-const ctx = ref(null);
+const canvasRef = ref(null);
+const width = 800;  // Width of the canvas
+const height = 600; // Height of the canvas
 
-// Initialize canvas and render image
-onMounted(() => {
-  canvas.value = document.getElementById('imageCanvas');
-  ctx.value = canvas.value.getContext('2d');
-  
-  // Resize canvas to fit the container
-  canvas.value.width = canvasContainer.value.offsetWidth;
-  canvas.value.height = canvasContainer.value.offsetHeight;
-
-  renderImage();
-});
-
-// Watch for zoomLevel changes
-watch(() => props.zoomLevel, () => {
-  renderImage();
-});
-
-// Function to render the image on the canvas with zoom
-const renderImage = () => {
-  if (!props.image) return;
-
+const drawImage = () => {
+  const canvas = canvasRef.value;
+  const context = canvas.getContext('2d');
   const img = new Image();
   img.src = props.image;
+
   img.onload = () => {
-    const canvasWidth = canvas.value.width;
-    const canvasHeight = canvas.value.height;
+    const scale = props.zoomLevel; // Scaling based on zoom level
+    const x = (width - img.width * scale) / 2;
+    const y = (height - img.height * scale) / 2;
 
-    // Apply zoom by scaling the image
-    const scaledWidth = img.width * props.zoomLevel;
-    const scaledHeight = img.height * props.zoomLevel;
-
-    // Calculate the position to center the image on the canvas
-    const offsetX = (canvasWidth - scaledWidth) / 2;
-    const offsetY = (canvasHeight - scaledHeight) / 2;
-
-    // Clear canvas and draw the scaled image
-    ctx.value.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.value.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
+    context.clearRect(0, 0, width, height);
+    context.drawImage(img, x, y, img.width * scale, img.height * scale);
   };
 };
+
+// Watch zoom level to re-render the canvas
+watch(() => props.zoomLevel, drawImage);
+
+onMounted(() => {
+  drawImage();
+});
 </script>
 
 <style scoped>
 .canvas-container {
-  width: 100%;
-  height: 500px; /* Adjust this based on your design */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
+  margin-top: 20px;
 }
 
 canvas {
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
+  border-radius: 8px;
 }
 </style>
-git 
