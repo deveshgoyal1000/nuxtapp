@@ -6,14 +6,8 @@
     <!-- Zoom Controls -->
     <Toolbar :zoomLevel="zoomLevel" :setZoomLevel="setZoomLevel" />
 
-    <!-- Image Preview or Metadata -->
-    <div v-if="uploadedImage">
-      <h2>Uploaded Image Preview:</h2>
-      <img :src="uploadedImage" alt="Uploaded Image" />
-    </div>
-
     <!-- Canvas for zoomable image -->
-    <Canvas :zoomLevel="zoomLevel" :image="uploadedImage" />
+    <Canvas v-if="uploadedImage" :zoomLevel="zoomLevel" :image="uploadedImage" />
   </div>
 </template>
 
@@ -51,12 +45,5 @@ h1 {
 
 input {
   margin-bottom: 20px;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 20px auto;
 }
 </style>
