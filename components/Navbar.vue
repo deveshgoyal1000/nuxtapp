@@ -1,10 +1,8 @@
 <template>
   <nav class="navbar">
-    <ul>
-      <li><NuxtLink to="/">Home</NuxtLink></li>
-      <li><NuxtLink to="/about">About</NuxtLink></li>
-      <li><NuxtLink to="/viewer">Upload</NuxtLink></li>
-    </ul>
+    <router-link to="/" class="nav-link">Home</router-link>
+    <router-link to="/about" class="nav-link">About</router-link>
+    <router-link to="/upload" class="nav-link">Upload</router-link>
   </nav>
 </template>
 
@@ -14,28 +12,21 @@
 <style scoped>
 .navbar {
   display: flex;
-  justify-content: space-around;
-  background-color: #f8f9fa;
-  padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-ul {
-  list-style: none;
-  display: flex;
+  justify-content: center;
   gap: 20px;
+  background-color: #4c8bf5;
+  padding: 15px 0;
+  border-radius: 8px;
 }
 
-li {
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
   font-size: 18px;
 }
 
-a {
-  text-decoration: none;
-  color: #007bff;
-}
-
-a:hover {
+.nav-link:hover {
   text-decoration: underline;
 }
 </style>
