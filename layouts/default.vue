@@ -17,6 +17,7 @@
   padding: 10px;
   text-align: center;
 }
+
 .footer {
   background: #f1f1f1;
   text-align: center;
