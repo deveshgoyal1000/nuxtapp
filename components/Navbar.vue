@@ -1,36 +1,41 @@
 <template>
-  <nav class="flex justify-between p-4 bg-blue-600 text-white">
-    <h1 class="text-xl font-bold">Medical Imaging App</h1>
-    <ul class="flex gap-4">
-      <li><nuxt-link to="/">Home</nuxt-link></li>
-      <li><nuxt-link to="/upload">Upload</nuxt-link></li>
-      <li><nuxt-link to="/about">About</nuxt-link></li>
+  <nav class="navbar">
+    <ul>
+      <li><NuxtLink to="/">Home</NuxtLink></li>
+      <li><NuxtLink to="/about">About</NuxtLink></li>
+      <li><NuxtLink to="/viewer">Upload</NuxtLink></li>
     </ul>
   </nav>
 </template>
 
 <script setup>
-// No specific script setup needed for this component
 </script>
 
 <style scoped>
-nav {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  background-color: #f8f9fa;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 20px;
 }
 
-li a {
+li {
+  font-size: 18px;
+}
+
+a {
   text-decoration: none;
-  color: white;
-  transition: color 0.3s ease;
+  color: #007bff;
 }
 
-li a:hover {
-  color: #ffcc00;
+a:hover {
+  text-decoration: underline;
 }
 </style>
