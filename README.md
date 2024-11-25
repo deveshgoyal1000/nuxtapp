@@ -6,6 +6,7 @@ The **Medical Imaging App** is a modern web application designed to handle medic
 
 ## Features
 
+
 ### Core Features
 - **Image Manipulation Tools**:
   - Cropping
