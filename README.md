@@ -67,4 +67,5 @@ The **Medical Imaging App** is a modern web application designed to handle medic
 - **UI**: Tailwind CSS, Naive UI
 - **State Management**: Pinia
 
+
 ---
