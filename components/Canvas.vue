@@ -1,88 +1,50 @@
 <template>
-  <div>
-    <h1>Welcome to the Medical Imaging App</h1>
-    <input type="file" @change="uploadFile" accept="image/*" />
-    
-    <div v-if="uploadedImage">
-      <h2>Uploaded Image Preview:</h2>
-      <img :src="uploadedImage" alt="Uploaded Image" />
-    </div>
-
-    <!-- Zoom Controls -->
-    <div class="toolbar">
-      <button @click="zoomIn">Zoom In</button>
-      <button @click="zoomOut">Zoom Out</button>
-    </div>
-    
-    <!-- Canvas Component -->
-    <Canvas :zoomLevel="zoomLevel" />
+  <div ref="canvasContainer" class="canvas-container">
+    <canvas id="imageCanvas" width="500" height="500"></canvas>
   </div>
 </template>
 
 <script setup>
-import Canvas from '@/components/Canvas.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
-const uploadedImage = ref(null);
-const zoomLevel = ref(1); // Initial zoom level
+const canvasContainer = ref(null);
 
-// File upload function
-function uploadFile(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedImage.value = e.target.result; // Store image preview URL
-    };
-    reader.readAsDataURL(file); // Read the file as a data URL
-  }
-}
+onMounted(() => {
+  const canvas = document.getElementById('imageCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Set canvas size to match container size
+  canvas.width = canvasContainer.value.offsetWidth;
+  canvas.height = canvasContainer.value.offsetHeight;
 
-// Zoom in and zoom out functions
-const zoomIn = () => {
-  zoomLevel.value += 0.1;
-};
+  // Example: Image rendering logic
+  const img = new Image();
+  img.src = 'path_to_image.jpg'; // Replace with your image path
 
-const zoomOut = () => {
-  if (zoomLevel.value > 0.1) {
-    zoomLevel.value -= 0.1;
-  }
-};
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  };
+
+  // Resize handler to adjust canvas size dynamically
+  window.addEventListener('resize', () => {
+    canvas.width = canvasContainer.value.offsetWidth;
+    canvas.height = canvasContainer.value.offsetHeight;
+    // Re-render the image on resize
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  });
+});
 </script>
 
 <style scoped>
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-input {
-  margin-bottom: 20px;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 20px auto;
-}
-
-.toolbar {
+.canvas-container {
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
-  gap: 10px;
+  align-items: center;
 }
 
-button {
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
+canvas {
+  border: 1px solid #ccc;
 }
 </style>
