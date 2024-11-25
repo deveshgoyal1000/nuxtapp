@@ -1,6 +1,6 @@
 <template>
   <div ref="canvasContainer" class="canvas-container">
-    <canvas ref="canvas"></canvas>
+    <canvas ref="canvas" />
   </div>
 </template>
 
@@ -27,10 +27,11 @@ onMounted(() => {
   canvas.value = canvasContainer.value.querySelector("canvas");
   ctx.value = canvas.value.getContext("2d");
 
-  renderImage(); // Render the image when the component mounts
+  // Render the image when component mounts
+  renderImage();
 });
 
-// Watch for changes in zoom level or image and re-render the image
+// Watch for zoomLevel changes or new images
 watch(
   () => [props.image, props.zoomLevel],
   () => {
@@ -47,50 +48,29 @@ const renderImage = () => {
   img.src = props.image;
 
   img.onload = () => {
-    const containerWidth = canvasContainer.value.offsetWidth;
-    const containerHeight = canvasContainer.value.offsetHeight;
+    // Set canvas dimensions to match the image dimensions
+    canvas.value.width = img.width * props.zoomLevel;
+    canvas.value.height = img.height * props.zoomLevel;
 
-    // Calculate aspect ratio for the image
-    const imgAspectRatio = img.width / img.height;
-    const containerAspectRatio = containerWidth / containerHeight;
-
-    let scaledWidth, scaledHeight;
-
-    // Fit the image within the container while maintaining its aspect ratio
-    if (imgAspectRatio > containerAspectRatio) {
-      // Image is wider than container
-      scaledWidth = containerWidth * props.zoomLevel;
-      scaledHeight = (containerWidth / img.width) * img.height * props.zoomLevel;
-    } else {
-      // Image is taller than container
-      scaledHeight = containerHeight * props.zoomLevel;
-      scaledWidth = (containerHeight / img.height) * img.width * props.zoomLevel;
-    }
-
-    // Set canvas size
-    canvas.value.width = scaledWidth;
-    canvas.value.height = scaledHeight;
-
-    // Clear canvas and draw the scaled image
+    // Clear the canvas and draw the scaled image
     ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
-    ctx.value.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+    ctx.value.drawImage(img, 0, 0, canvas.value.width, canvas.value.height);
   };
 };
 </script>
 
 <style scoped>
 .canvas-container {
-  width: 100%;
-  height: 500px; /* Adjust height to suit your layout */
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden; /* Ensures no overflow for larger images */
+  width: 100%;
+  height: auto;
 }
 
 canvas {
   border: 1px solid #ccc;
   max-width: 100%;
-  max-height: 100%;
+  height: auto;
 }
 </style>
