@@ -1,11 +1,29 @@
 <template>
   <div>
-    <header>
+    <header class="header">
       <h1>Medical Imaging App</h1>
     </header>
     <NuxtPage />
-    <footer>
+    <footer class="footer">
       <p>&copy; 2024 Medical Imaging App</p>
     </footer>
   </div>
 </template>
+
+<script setup>
+// Add any necessary logic here if required for layout
+</script>
+
+<style scoped>
+.header {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+.footer {
+  background: #f1f1f1;
+  text-align: center;
+  padding: 10px;
+}
+</style>
