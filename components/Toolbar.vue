@@ -10,9 +10,11 @@
 function zoomIn() {
   console.log("Zooming In...");
 }
+
 function zoomOut() {
   console.log("Zooming Out...");
 }
+
 function reset() {
   console.log("Resetting...");
 }
@@ -24,6 +26,7 @@ function reset() {
   gap: 10px;
   margin-bottom: 10px;
 }
+
 button {
   padding: 8px 12px;
   background-color: #007bff;
@@ -32,6 +35,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
 button:hover {
   background-color: #0056b3;
 }
