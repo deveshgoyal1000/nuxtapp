@@ -1,62 +1,57 @@
 <template>
-  <div>
-    <h1>Welcome to the Medical Imaging App</h1>
-    <input type="file" @change="uploadFile" accept="image/*" />
-
-    <!-- Zoom Controls -->
-    <Toolbar :zoomLevel="zoomLevel" :setZoomLevel="setZoomLevel" />
-
-    <!-- Image Preview or Metadata -->
-    <div v-if="uploadedImage">
-      <h2>Uploaded Image Preview:</h2>
-      <img :src="uploadedImage" alt="Uploaded Image" />
-    </div>
-
-    <!-- Canvas for zoomable image -->
-    <Canvas :zoomLevel="zoomLevel" :image="uploadedImage" />
+  <div class="toolbar">
+    <button @click="zoomIn">Zoom In</button>
+    <button @click="zoomOut">Zoom Out</button>
+    <button @click="reset">Reset</button>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import Canvas from '@/components/Canvas.vue';
-import Toolbar from '@/components/Toolbar.vue';
-
-const uploadedImage = ref(null);
-const zoomLevel = ref(1); // Initial zoom level
-
-// Function to handle image upload
-function uploadFile(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedImage.value = e.target.result; // Store image preview URL
-    };
-    reader.readAsDataURL(file); // Read the file as a data URL
+const { zoomLevel, setZoomLevel } = defineProps({
+  zoomLevel: {
+    type: Number,
+    required: true
+  },
+  setZoomLevel: {
+    type: Function,
+    required: true
   }
-}
+});
 
-// Function to update zoom level
-const setZoomLevel = (newZoomLevel) => {
-  zoomLevel.value = newZoomLevel;
+const zoomIn = () => {
+  const newZoomLevel = zoomLevel + 0.1;
+  setZoomLevel(newZoomLevel);
+};
+
+const zoomOut = () => {
+  if (zoomLevel > 0.1) {
+    const newZoomLevel = zoomLevel - 0.1;
+    setZoomLevel(newZoomLevel);
+  }
+};
+
+const reset = () => {
+  setZoomLevel(1);
 };
 </script>
 
 <style scoped>
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-input {
-  margin-bottom: 20px;
+button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 20px auto;
+button:hover {
+  background-color: #0056b3;
 }
 </style>
