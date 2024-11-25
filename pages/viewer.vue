@@ -60,4 +60,8 @@ h1 {
   transition: all 0.3s ease;
 }
 
-.
+.file-input:hover {
+  background: #f8d210;
+  color: #000;
+}
+</style>
