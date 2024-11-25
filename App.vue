@@ -1,29 +1,62 @@
 <template>
   <div>
-    <header class="header">
-      <h1>Medical Imaging App</h1>
-    </header>
-    <NuxtPage />
-    <footer class="footer">
-      <p>&copy; 2024 Medical Imaging App</p>
-    </footer>
+    <h1>Welcome to the Medical Imaging App</h1>
+    <input type="file" @change="uploadFile" accept="image/*" />
+
+    <!-- Zoom Controls -->
+    <Toolbar :zoomLevel="zoomLevel" :setZoomLevel="setZoomLevel" />
+
+    <!-- Image Preview or Metadata -->
+    <div v-if="uploadedImage">
+      <h2>Uploaded Image Preview:</h2>
+      <img :src="uploadedImage" alt="Uploaded Image" />
+    </div>
+
+    <!-- Canvas for zoomable image -->
+    <Canvas :zoomLevel="zoomLevel" :image="uploadedImage" />
   </div>
 </template>
 
 <script setup>
-// Add any necessary logic here if required for layout
+import { ref } from 'vue';
+import Canvas from '@/components/Canvas.vue';
+import Toolbar from '@/components/Toolbar.vue';
+
+const uploadedImage = ref(null);
+const zoomLevel = ref(1); // Initial zoom level
+
+// Function to handle image upload
+function uploadFile(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImage.value = e.target.result; // Store image preview URL
+    };
+    reader.readAsDataURL(file); // Read the file as a data URL
+  }
+}
+
+// Function to update zoom level
+const setZoomLevel = (newZoomLevel) => {
+  zoomLevel.value = newZoomLevel;
+};
 </script>
 
 <style scoped>
-.header {
-  background: #007bff;
-  color: white;
-  padding: 10px;
+h1 {
   text-align: center;
+  margin-bottom: 20px;
 }
-.footer {
-  background: #f1f1f1;
-  text-align: center;
-  padding: 10px;
+
+input {
+  margin-bottom: 20px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 20px auto;
 }
 </style>
