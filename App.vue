@@ -1,44 +1,36 @@
 <template>
   <div id="app">
-    <h1>Image Manipulation and DICOM Viewer</h1>
-    <input type="file" @change="handleFileUpload" />
-    <div v-if="isImage">
-      <Canvas :image="fileSrc" />
-    </div>
-    <div v-if="isDicom">
-      <DicomViewer :dicomFile="uploadedFile" />
-    </div>
+    <Toolbar :zoomLevel="zoomLevel" :setZoomLevel="setZoomLevel" />
+    <Canvas :image="image" :zoomLevel="zoomLevel" />
+    <DicomViewer />
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import Toolbar from "./components/Toolbar.vue";
 import Canvas from "./components/Canvas.vue";
 import DicomViewer from "./components/DicomViewer.vue";
 
-const uploadedFile = ref(null);
-const fileSrc = ref(null);
-const isImage = ref(false);
-const isDicom = ref(false);
+// State variables
+const zoomLevel = ref(1); // Default zoom level
+const image = ref(require("@/assets/sample.jpg")); // Replace with your image path
 
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  uploadedFile.value = file;
-
-  if (file.type === "image/jpeg" || file.type === "image/png") {
-    fileSrc.value = URL.createObjectURL(file);
-    isImage.value = true;
-    isDicom.value = false;
-  } else if (file.name.endsWith(".dcm")) {
-    isDicom.value = true;
-    isImage.value = false;
-  }
+// Function to update zoom level
+const setZoomLevel = (level) => {
+  zoomLevel.value = level;
 };
 </script>
 
 <style>
 #app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
-  margin: 20px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 </style>
